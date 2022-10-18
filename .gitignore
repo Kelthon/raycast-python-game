@@ -1,0 +1,8 @@
+# Virtual Environments
+env
+venv
+.env
+.venv
+
+# Compiled
+__pycache__
