@@ -25,8 +25,16 @@ while True:
     
     if mousex == posx:
         xc = mousex
+        if mousey > posy:
+            yc = main_window_height
+        else:
+            yc = 0
     elif mousey == posy:
         yc = mousey
+        if mousex > posx:
+            xc = main_window_width
+        else:
+            xc = 0
     else:
         if mousey < posy:
             inclinacao = -(mousey - posy) / (mousex - posx)
