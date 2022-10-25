@@ -1,94 +1,83 @@
 import pygame
 from sys import exit
 from typing import Tuple
-from pygame import Vector2, Color
+from pygame import Color
 from pygame.locals import *
+from pygame import Vector2
+from game.src.player import Player
+from game.src.scene import Scene
+from game.src.game import Game
 
-posx = 200
-posy = 200
-main_window_width = 640
-main_window_height = 640
+game = Game()
+phase_1 = Scene()
+game.scenes.append(phase_1)
+game.change_scene(game.scenes[0])
+game.run()
+# from Raycast import Raycast
 
-pygame.init()
-window = pygame.display.set_mode((main_window_width, main_window_height), RESIZABLE)
+# def coordinate(x: float, y: float) -> Vector2:
+#     cx =  window.width / 2 
+#     cy =  window.height / 2
 
-def raycast(origin: Vector2, direction: Vector2, color:Color=Color(0, 0, 0)) -> Rect:
-    # Calc raycast line
-    ray = Vector2(0, 0)
-    line_slope = 0
+#     return Vector2(cx + x, cy + y)
 
-    # Case line slope is zero
-    if direction.x == origin.x:
-        ray.x = direction.x
-        if direction.y > origin.y:
-            ray.y = main_window_height
-        else:
-            ray.y = 0
-    elif direction.y == origin.y:
-        ray.y = direction.y
-        if direction.x > origin.x:
-            ray.x = main_window_width
-        else:
-            ray.x = 0
-    # Case line slope is no-zero
-    else:
-        if direction.y < origin.y:
+# def grid(base_color: Color = Color(255, 255, 255), axis_x_color: Color = Color(255, 0, 127), axis_y_color: Color = Color(0, 255, 127)) -> Tuple[Rect]:
+#     axis_x = window.width / 2
+#     axis_y = window.height / 2
 
-            ray.y = 0
-            line_slope = (origin.y - direction.y) / (direction.x - origin.x)
-            ray.x = direction.x + ((direction.y - ray.y) / line_slope)
+#     pygame.draw.line(window.surface, axis_x_color, (0, axis_y), (window.width, axis_y))
+#     pygame.draw.line(window.surface, axis_y_color, (axis_x, 0), (axis_x, window.height))
 
-        else:
-            ray.y = main_window_height
-            line_slope = (direction.y - origin.y) / (direction.x - origin.x)
-            ray.x = direction.x + ((ray.y - direction.y) / line_slope) 
+# pygame.init()
+# pygame.font.init()
+# font = pygame.font.SysFont("consolas", 12)
 
-    return pygame.draw.aaline(window, color, origin, ray)
+# skybox_sprite = pygame.image.load(".\\Game\\public\\skybox.png")
+# player_icon_sprite = pygame.image.load(".\\Game\\public\\map_icon_1.png")
+# texture_wall_sprite = pygame.image.load(".\\Game\\public\\texture_1.png")
 
+# window = Window(size=Vector2(720, 480))
+# player = Entity(player_icon_sprite, coordinate(0, 0))
+# grid_on = True
+# walls = []
+# origin = Vector2(0, 0)
 
-def grid(base_color: Color = Color(0, 0, 0), axis_x_color: Color = Color(255, 0, 0), axis_y_color: Color = Color(0, 255, 127)) -> Tuple[Rect]:
+# while True:
+#     for event in pygame.event.get():
+#         if event.type == WINDOWCLOSE:
+#             pygame.quit()
+#             exit()
 
-    for i in range(0, main_window_width + 1, 64):
-        if main_window_width / 2  == i:
-            axis_x = i
-        else:
-            pygame.draw.line(window, base_color, (i, 0), (i, main_window_height))
+#     window.update_size(Vector2(window.surface.get_size()))
+#     window.surface.fill([0]*3)
 
-    for i in range(0, main_window_height + 1, 64):
-        if main_window_width / 2  == i:
-            pygame.draw.line(window, axis_y_color, (0, i), (main_window_width, i))
-        else:
-            pygame.draw.line(window, base_color, (0, i), (main_window_width, i))
+#     mouse = Vector2(pygame.mouse.get_pos())
+#     # aim = Raycast(player.position, mouse, Color(0, 255, 0))
+#     keys_pressed = pygame.key.get_pressed()
+#     left, wheel, right = pygame.mouse.get_pressed()
 
-    pygame.draw.line(window, axis_x_color, (axis_x, 0), (axis_x, main_window_height))
- 
+#     # draw player and raycast
+#     if grid_on:
+#         grid()
 
-player_north = pygame.draw.line(window, [0, 0, 255], ((main_window_width / 2) -1, 0), ((main_window_width / 2) -1, main_window_height))
-player_left = pygame.draw.line(window, [255, 0, 0], (0, (main_window_height / 2) -1), (main_window_width, (main_window_height / 2) -1))
+#     player.update()
+#     # aim.raycast()
 
-while True:
-    for event in pygame.event.get():
-        if event.type == WINDOWCLOSE:
-            pygame.quit()
-            exit()
-    
-    window.fill([0]*3)
-    mousex, mousey = pygame.mouse.get_pos()
-    keys_pressed = pygame.key.get_pressed()
+#     # if player.shape in  wall.collidelist():
+#     #     window.surface.blit(font.render(True, True, Color(100, 255, 100)), (Vector2(50, 10), Vector2(50, 10)))
 
-    # draw player and raycast
-    grid(Color(80, 80, 80), Color(160, 160, 160), Color(160, 160, 160))
-    player = pygame.draw.circle(window, [255]*3, (posx, posy), 10)
-    raycast(Vector2(posx, posy), Vector2(mousex, mousey), Color(0, 255, 0))
+#     if keys_pressed[K_a]:
+#         player.position.x -= 0.1
+#     elif keys_pressed[K_d]:
+#         player.position.x += 0.1
+#     if keys_pressed[K_w]:
+#         player.position.y -= 0.1
+#     elif keys_pressed[K_s]:
+#         player.position.y += 0.1
+#     if keys_pressed[K_TAB]:
+#         grid_on = True if grid_on else False
+#     if keys_pressed[K_SPACE]:
+#         player.shape = pygame.transform.rotate(player.shape, 45)
+#         angle = angle + 45 if angle < 360 else 0
 
-    # player movement
-    if keys_pressed[K_a] or keys_pressed[K_LEFT]:
-        posx -= 0.1
-    elif keys_pressed[K_d] or keys_pressed[K_RIGHT]:
-        posx += 0.1
-    if keys_pressed[K_w] or keys_pressed[K_UP]:
-        posy -= 0.1
-    elif keys_pressed[K_s] or keys_pressed[K_DOWN]:
-        posy += 0.1
-
-    pygame.display.flip()
+#     pygame.display.flip()

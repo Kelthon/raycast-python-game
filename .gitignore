@@ -6,3 +6,6 @@ venv
 
 # Compiled
 __pycache__
+
+# Logs
+*.log
