@@ -3,7 +3,6 @@ import pygame
 pygame.init()
 pygame.font.init()
 
-from game.src.window import Window
 from game.src.scene import Scene
 from game.src.game import Game
 
