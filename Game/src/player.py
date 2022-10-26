@@ -33,7 +33,6 @@ class Player(Entity):
                     collide_list.append("right")
                 
                 if self_rect.left <= rect.right and self_rect.right > rect.right:
-                    print(rect.bottom >= self_rect.top, rect.bottom, self_rect.top)
                     collide_list.append("left")
 
         return collide_list
