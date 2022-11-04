@@ -5,7 +5,6 @@ from pygame import Rect, Vector2
 from game.src.entity import Entity
 from game.src.behavior import Behavior
 from game.src.transform import Transform
-from pygame.sprite import Sprite, collide_rect
 
 class Player(Entity):
     def __init__(self, shape: Rect | None = None, transform: Transform = Transform(), behavior: Behavior = None) -> None:
@@ -16,7 +15,7 @@ class Player(Entity):
         self.shape = pygame.transform.scale(self.shape, self.transform.scale)
         self.transform.position = Vector2((w - self.transform.scale.x) / 2, (h - self.transform.scale.y) / 2)
     
-    def collide(self, rects: List[Rect]):
+    def get_collision_direction(self, rects: List[Rect]):
         collide_list = []
         self_rect = self.shape.get_rect()
         self_rect.update(self.transform.position, self.transform.scale)
@@ -39,7 +38,7 @@ class Player(Entity):
 
     def update(self, map: List[Rect]):
         key = pygame.key.get_pressed()
-        collision = self.collide(map)
+        collision = self.get_collision_direction(map)
         
         if not "top" in collision:
             if key[K_w]:
@@ -56,4 +55,10 @@ class Player(Entity):
         if not "right" in collision:
             if key[K_d]:
                 self.transform.position.x += 0.1
-            
+
+        # Not works rotation
+        if key[K_SPACE]:
+            pos = self.transform.position 
+            self.transform.position = Vector2(0, 0)
+            self.shape = pygame.transform.rotate(self.shape, 45)
+            # self.transform.position = pos
