@@ -1,3 +1,5 @@
+from importlib.resources import path
+from pydoc import resolve
 import pygame
 from pygame import Vector2
 from game.src.player import Player
@@ -5,6 +7,9 @@ from game.src.window import Window
 from game.src.behavior import Behavior
 from game.src.gamelogger import GameLogger
 from game.src.transform import Transform
+import os
+import sys
+
 
 Mouse = pygame.mouse
 Input = pygame.key
@@ -33,7 +38,8 @@ global_window = Window (
 logger = GameLogger()
 
 player = Player (
-    Image.load(".\\Game\\public\\player_icon.png"),
+    # Image.load(sys.path[0]+"/game/public/player_icon.png"), 
+    Image.load(os.path.join(sys.path[0], "game", "public", "player_icon.png")),  
     Transform  (
         global_window.center(),
         Vector2(0, 0),
