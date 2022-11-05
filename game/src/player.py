@@ -55,10 +55,10 @@ class Player(Entity):
         if not "right" in collision:
             if key[K_d]:
                 self.transform.position.x += 0.1
-
+                
         # Not works rotation
-        if key[K_SPACE]:
-            pos = self.transform.position 
-            self.transform.position = Vector2(0, 0)
-            self.shape = pygame.transform.rotate(self.shape, 45)
-            # self.transform.position = pos
+        # if key[K_SPACE]:
+        #     pos = self.transform.position 
+        #     self.transform.position = Vector2(0, 0)
+        #     self.shape = pygame.transform.rotate(self.shape, 45)
+        #     self.transform.position = pos
