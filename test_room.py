@@ -154,19 +154,37 @@ while inGame:
     inGame = update()
     
     walls = [
-        pygame.draw.rect(tela, [160]*3, (0, 0, 40, 120)),
-        pygame.draw.rect(tela, [150]*3, (40, 0, 80, 40)),
-        pygame.draw.rect(tela, [160]*3, (tela_size.x - 40, 0, 40, 120)),
-        pygame.draw.rect(tela, [150]*3, (tela_size.x - 120, 0, 80, 40)),
-        pygame.draw.rect(tela, [160]*3, (0, tela_size.y - 120, 40, 120)),
-        pygame.draw.rect(tela, [150]*3, (40, tela_size.y - 40, 80, 40)),
-        pygame.draw.rect(tela, [160]*3, (tela_size.x - 40, tela_size.y - 120, 40, 120)),
-        pygame.draw.rect(tela, [150]*3, (tela_size.x - 120, tela_size.y - 40, 80, 40)),
+        pygame.draw.rect(tela, [160]*3, (0, 0, 5, 120)),
+        pygame.draw.rect(tela, [160]*3, (5, 0, 115, 5)),
+        pygame.draw.rect(tela, [160]*3, (0, 120, 70, 5)),
+        pygame.draw.rect(tela, [160]*3, (120, 0, 5, 70)),
+        pygame.draw.rect(tela, [160]*3, (120, 0, 5, 70)),
+        pygame.draw.rect(tela, [160]*3, (120, 0, 5, 70)),
 
-        pygame.draw.rect(tela, [150]*3, (tela_center.x - 150, tela_center.y - 100, 300, 5)),
-        pygame.draw.rect(tela, [140]*3, (tela_center.x - 155, tela_center.y - 100, 5, 200)),
-        pygame.draw.rect(tela, [130]*3, (tela_center.x + 150, tela_center.y - 100, 5, 200)),
+        pygame.draw.rect(tela, [160]*3, (tela_size.x - 5, 0, 5, 120)),
+        pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, 0, 115, 5)),
+        pygame.draw.rect(tela, [160]*3, (tela_size.x - 125, 0, 5, 70)),
+        pygame.draw.rect(tela, [160]*3, (tela_size.x - 70, 120, 70, 5)),
+
+        pygame.draw.rect(tela, [160]*3, (0, tela_size.y - 120, 5, 120)),
+        pygame.draw.rect(tela, [160]*3, (5, tela_size.y - 5, 115, 5)),
+        pygame.draw.rect(tela, [160]*3, (120, tela_size.y - 70, 5, 70)),
+        pygame.draw.rect(tela, [160]*3, (5, tela_size.y - 120, 70, 5)),
+
+        pygame.draw.rect(tela, [160]*3, (tela_size.x - 5, tela_size.y - 120, 5, 120)),
+        pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, tela_size.y - 5, 115, 5)),
+        pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, tela_size.y - 70, 5, 70)),
+        pygame.draw.rect(tela, [160]*3, (tela_size.x - 70, tela_size.y - 120, 70, 5)),
+
+        pygame.draw.rect(tela, [160]*3, (tela_center.x - 150, tela_center.y - 100, 70, 5)),
+        pygame.draw.rect(tela, [160]*3, (tela_center.x - 35, tela_center.y - 100, 70, 5)),
+        pygame.draw.rect(tela, [160]*3, (tela_center.x + 80, tela_center.y - 100, 70, 5)),
+
+        pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y - 100, 5, 200)),
+        pygame.draw.rect(tela, [160]*3, (tela_center.x + 150, tela_center.y - 100, 5, 200)),
+        pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y + 100, 100, 5)),
+        pygame.draw.rect(tela, [160]*3, (tela_center.x + 55, tela_center.y + 100, 100, 5)),
     ]
 
-    player = pygame.draw.circle(tela, [255]*3, player_position, 20)
+    player = pygame.draw.circle(tela, [255]*3, player_position, 10)
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, raycast_with_collision(player_position, mouse_position(), tela_size, walls))
