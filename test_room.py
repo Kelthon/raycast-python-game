@@ -23,7 +23,7 @@ def update_screen() -> None:
     Calc the line slope of a line
 '''
 def line_slope(origin: Vector2, direction: Vector2) -> float:
-        slope = 0
+        slope = -100
 
         if direction.x != origin.x and direction.y != origin.y:
             slope_direction = origin.y - direction.y if direction.y < origin.y else direction.y - origin.y
@@ -56,6 +56,11 @@ def raycast(origin: Vector2, direction: Vector2, max_length: Vector2) -> Vector2
             ray.x = direction.x + (slope_direction / ray_line_slope)
 
         return ray
+
+# raycast enemy
+def straight_raycast() -> Vector2:
+    return (enemy_position.x,enemy_position.y+200);
+
 
 def raycast_with_collision(origin: Vector2, direction: Vector2, max_length: Vector2, collision_list) -> Vector2:
     ray = raycast(origin, direction, max_length)
@@ -128,20 +133,20 @@ def player_move() -> None:
 '''
 
 # movement of enemy horizontally
-direction = 1;
+direction_move = 1;
 def enemy_move() -> None:
 
-    global direction;
+    global direction_move;
 
-    if (math.floor(enemy_position.x) == 0):
+    if (math.floor(enemy_position.x) == 120):
 
-        direction = 1;
+        direction_move = 1;
 
-    elif (math.floor(enemy_position.x) == 720):
-        
-        direction = -1;
+    elif (math.floor(enemy_position.x) == 660):
 
-    enemy_position.x+=0.2*direction;
+        direction_move = -1;
+
+    enemy_position.x+=0.2*direction_move;
 
 def update() -> None:
     
@@ -165,7 +170,7 @@ tela_size = Vector2((800, 600))
 tela_center = Vector2(tela_size.x / 2, tela_size.y / 2)
 tela = pygame.display.set_mode(tela_size)
 player_position = Vector2(tela_center)
-enemy_position = Vector2(0,0)
+enemy_position = Vector2(120,0)
 
 '''
     main loop responsible for drawing things on the screen
@@ -192,3 +197,4 @@ while inGame:
 
     player = pygame.draw.circle(tela, [255]*3, player_position, 20);
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, raycast_with_collision(player_position, mouse_position(), tela_size, walls))
+    raycast_line_e = pygame.draw.aaline(tela, [0, 255, 0], (enemy_position.x+10,enemy_position.y+10), straight_raycast())
