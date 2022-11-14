@@ -193,8 +193,9 @@ while inGame:
         pygame.draw.rect(tela, [130]*3, (tela_center.x + 150, tela_center.y - 100, 5, 200)),
     ]
 
-    enemy = pygame.draw.rect(tela, (240,42,42), Rect(enemy_position.x, enemy_position.y, 20, 20),2);
 
-    player = pygame.draw.circle(tela, [255]*3, player_position, 20);
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, raycast_with_collision(player_position, mouse_position(), tela_size, walls))
-    raycast_line_e = pygame.draw.aaline(tela, [0, 255, 0], (enemy_position.x+10,enemy_position.y+10), straight_raycast())
+    range_enemy = pygame.draw.circle(tela, (95,83,83), (enemy_position.x+10,enemy_position.y+10), 100);
+    enemy = pygame.draw.rect(tela, (240,42,42), Rect(enemy_position.x, enemy_position.y, 20, 20),2);
+    player = pygame.draw.circle(tela, [255]*3, player_position, 20);
+    raycast_line_e = pygame.draw.aaline(tela, [0, 255, 0], (enemy_position.x+10,enemy_position.y+10), player_position)
