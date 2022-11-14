@@ -3,6 +3,7 @@ import pygame
 from pygame.locals import *
 from typing import Sequence, List, Tuple
 from pygame import Vector2, Rect
+import math
 
 '''
     Exit the game
@@ -108,27 +109,45 @@ def player_move() -> None:
 
     if not "top" in collision:
         if key[K_w]:
-            player_position.y -= 0.1
+            player_position.y -= 0.2
     
     if not "bottom" in collision:
         if key[K_s]:
-            player_position.y += 0.1
+            player_position.y += 0.2
 
     if not "left" in collision:
         if key[K_a]:
-            player_position.x -= 0.1
+            player_position.x -= 0.2
     
     if not "right" in collision:
         if key[K_d]:
-            player_position.x += 0.1
+            player_position.x += 0.2
 
 '''
     Call functions to update the game loop
 '''
+
+# movement of enemy horizontally
+direction = 1;
+def enemy_move() -> None:
+
+    global direction;
+
+    if (math.floor(enemy_position.x) == 0):
+
+        direction = 1;
+
+    elif (math.floor(enemy_position.x) == 720):
+        
+        direction = -1;
+
+    enemy_position.x+=0.2*direction;
+
 def update() -> None:
     
     update_screen()
     player_move()
+    enemy_move();
 
     for event in pygame.event.get():
         if event.type == WINDOWCLOSE:
@@ -146,6 +165,7 @@ tela_size = Vector2((800, 600))
 tela_center = Vector2(tela_size.x / 2, tela_size.y / 2)
 tela = pygame.display.set_mode(tela_size)
 player_position = Vector2(tela_center)
+enemy_position = Vector2(0,0)
 
 '''
     main loop responsible for drawing things on the screen
@@ -168,5 +188,7 @@ while inGame:
         pygame.draw.rect(tela, [130]*3, (tela_center.x + 150, tela_center.y - 100, 5, 200)),
     ]
 
-    player = pygame.draw.circle(tela, [255]*3, player_position, 20)
+    enemy = pygame.draw.rect(tela, (240,42,42), Rect(enemy_position.x, enemy_position.y, 20, 20),2);
+
+    player = pygame.draw.circle(tela, [255]*3, player_position, 20);
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, raycast_with_collision(player_position, mouse_position(), tela_size, walls))
