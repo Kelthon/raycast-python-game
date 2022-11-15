@@ -109,6 +109,7 @@ def get_collision_direction(rects: List[Rect]):
     Updates the variable player_position
 '''
 def player_move() -> None:
+    global radius;
     key = pygame.key.get_pressed()
     collision = get_collision_direction(walls)
 
@@ -128,6 +129,13 @@ def player_move() -> None:
         if key[K_d]:
             player_position.x += 0.2
 
+    if player_position.x >= enemy_position.x+10-radius:
+        if player_position.x <= enemy_position.x+10+radius:
+            if player_position.y <= enemy_position.y+10-radius:
+                if player_position.y >= enemy_position.y+10-radius:
+                    print("ok");
+                    #print("player_position = ",player_position,"| enemy_position = ",enemy_position);
+
 '''
     Call functions to update the game loop
 '''
@@ -135,8 +143,9 @@ def player_move() -> None:
 # movement of enemy horizontally
 direction_move = 1;
 def enemy_move() -> None:
-
-    global direction_move;
+    pass
+    
+"""     global direction_move;
 
     if (math.floor(enemy_position.x) == 120):
 
@@ -144,9 +153,10 @@ def enemy_move() -> None:
 
     elif (math.floor(enemy_position.x) == 660):
 
-        direction_move = -1;
+        direction_move = -1; 
 
-    enemy_position.x+=0.2*direction_move;
+    enemy_position.x+=0.2*direction_move;"""
+
 
 def update() -> None:
     
@@ -170,7 +180,8 @@ tela_size = Vector2((800, 600))
 tela_center = Vector2(tela_size.x / 2, tela_size.y / 2)
 tela = pygame.display.set_mode(tela_size)
 player_position = Vector2(tela_center)
-enemy_position = Vector2(120,0)
+enemy_position = Vector2(120,100)
+radius = 100;
 
 '''
     main loop responsible for drawing things on the screen
@@ -195,7 +206,8 @@ while inGame:
 
 
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, raycast_with_collision(player_position, mouse_position(), tela_size, walls))
-    range_enemy = pygame.draw.circle(tela, (95,83,83), (enemy_position.x+10,enemy_position.y+10), 100);
+    range_enemy = pygame.draw.circle(tela, (95,83,83), (enemy_position.x+10,enemy_position.y+10), radius);
+    raycast_line_e = pygame.draw.aaline(tela, [0, 255, 0], (enemy_position.x+10,enemy_position.y+10), player_position)
+    
     enemy = pygame.draw.rect(tela, (240,42,42), Rect(enemy_position.x, enemy_position.y, 20, 20),2);
     player = pygame.draw.circle(tela, [255]*3, player_position, 20);
-    raycast_line_e = pygame.draw.aaline(tela, [0, 255, 0], (enemy_position.x+10,enemy_position.y+10), player_position)
