@@ -144,6 +144,7 @@ def enemy_move() -> None:
     width = 0;
     tan = 0;
     res = 0
+    state = 1;
     
     if player_position.x >= enemy_position.x+10-radius:
         if player_position.x <= enemy_position.x+10+radius:
@@ -166,13 +167,14 @@ def enemy_move() -> None:
                     #print(sen);
                     enemy_position.y += sen*0.1;
                     enemy_position.x += cos*0.1;
+                    state = 0
                     #enemy_position.x += numpy.sin(numpy.arctan(tan))*res;
                     
                     #print(numpy.degrees(numpy.arctan(height/width)));
                     
                     #print("height = ", height, "| width = ",width);
                     
-"""     global direction_move;
+    global direction_move;
 
     if (math.floor(enemy_position.x) == 120):
 
@@ -182,7 +184,7 @@ def enemy_move() -> None:
 
         direction_move = -1; 
 
-    enemy_position.x+=0.2*direction_move;"""
+    enemy_position.x+=0.2*direction_move*state;
 
 
 def update() -> None:
