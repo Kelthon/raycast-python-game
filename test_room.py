@@ -131,10 +131,10 @@ def player_move() -> None:
 
     if player_position.x >= enemy_position.x+10-radius:
         if player_position.x <= enemy_position.x+10+radius:
-            if player_position.y <= enemy_position.y+10-radius:
-                if player_position.y >= enemy_position.y+10-radius:
-                    print("ok");
-                    #print("player_position = ",player_position,"| enemy_position = ",enemy_position);
+            if player_position.y >= enemy_position.y+10-radius:
+                if player_position.y <= enemy_position.y+10+radius:
+                    
+                    print("player_position = ",player_position,"| enemy_position = ",enemy_position);
 
 '''
     Call functions to update the game loop
