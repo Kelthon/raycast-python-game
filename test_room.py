@@ -4,6 +4,7 @@ from pygame.locals import *
 from typing import Sequence, List, Tuple
 from pygame import Vector2, Rect
 import math
+import numpy
 
 '''
     Exit the game
@@ -109,7 +110,7 @@ def get_collision_direction(rects: List[Rect]):
     Updates the variable player_position
 '''
 def player_move() -> None:
-    global radius;
+    
     key = pygame.key.get_pressed()
     collision = get_collision_direction(walls)
 
@@ -129,12 +130,7 @@ def player_move() -> None:
         if key[K_d]:
             player_position.x += 0.2
 
-    if player_position.x >= enemy_position.x+10-radius:
-        if player_position.x <= enemy_position.x+10+radius:
-            if player_position.y >= enemy_position.y+10-radius:
-                if player_position.y <= enemy_position.y+10+radius:
-                    
-                    print("player_position = ",player_position,"| enemy_position = ",enemy_position);
+
 
 '''
     Call functions to update the game loop
@@ -143,8 +139,39 @@ def player_move() -> None:
 # movement of enemy horizontally
 direction_move = 1;
 def enemy_move() -> None:
-    pass
+    angle = 0;
+    height = 0;
+    width = 0;
+    tan = 0;
+    res = 0
     
+    if player_position.x >= enemy_position.x+10-radius:
+        if player_position.x <= enemy_position.x+10+radius:
+            if player_position.y >= enemy_position.y+10-radius:
+                if player_position.y <= enemy_position.y+10+radius:
+                    """ enemy_position.x +=
+                    enemy_position.y += """
+                    #print("player_position = ",player_position,"| enemy_position = ",enemy_position, "| raycast_e = ", raycast_line_e);
+                    width = player_position.x - enemy_position.x-10;
+                    height = player_position.y - enemy_position.y-10
+                    tan = height/width;
+                    
+                    res = 1
+                    sen = numpy.sin(numpy.arctan(tan))*res
+                    cos = numpy.cos(numpy.arctan(tan))*res
+                    if (width < 0):
+                        sen = -sen;
+                        cos = -cos
+
+                    #print(sen);
+                    enemy_position.y += sen*0.1;
+                    enemy_position.x += cos*0.1;
+                    #enemy_position.x += numpy.sin(numpy.arctan(tan))*res;
+                    
+                    #print(numpy.degrees(numpy.arctan(height/width)));
+                    
+                    #print("height = ", height, "| width = ",width);
+                    
 """     global direction_move;
 
     if (math.floor(enemy_position.x) == 120):
@@ -180,7 +207,7 @@ tela_size = Vector2((800, 600))
 tela_center = Vector2(tela_size.x / 2, tela_size.y / 2)
 tela = pygame.display.set_mode(tela_size)
 player_position = Vector2(tela_center)
-enemy_position = Vector2(120,100)
+enemy_position = Vector2(200,80)
 radius = 100;
 
 '''
@@ -205,8 +232,8 @@ while inGame:
     ]
 
 
-    raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, raycast_with_collision(player_position, mouse_position(), tela_size, walls))
     range_enemy = pygame.draw.circle(tela, (95,83,83), (enemy_position.x+10,enemy_position.y+10), radius);
+    raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, raycast_with_collision(player_position, mouse_position(), tela_size, walls))
     raycast_line_e = pygame.draw.aaline(tela, [0, 255, 0], (enemy_position.x+10,enemy_position.y+10), player_position)
     
     enemy = pygame.draw.rect(tela, (240,42,42), Rect(enemy_position.x, enemy_position.y, 20, 20),2);
