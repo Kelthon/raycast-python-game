@@ -226,7 +226,6 @@ def player_move() -> None:
 direction_move = 1;
 def enemy_move() -> None:
     """movement of enemy horizontally"""
-    angle = 0;
     height = 0;
     width = 0;
     tan = 0;
@@ -237,14 +236,10 @@ def enemy_move() -> None:
         if player_position.x <= enemy_position.x+10+radius:
             if player_position.y >= enemy_position.y+10-radius:
                 if player_position.y <= enemy_position.y+10+radius:
-                    """ enemy_position.x +=
-                    enemy_position.y += """
-                    #print("player_position = ",player_position,"| enemy_position = ",enemy_position, "| raycast_e = ", raycast_line_e);
-                    width = player_position.x - enemy_position.x-10;
+                    width = player_position.x - enemy_position.x-10
                     height = player_position.y - enemy_position.y-10
-                    tan = height/width;
-                    h_w = (height,width);
-                    print(h_w);
+                    tan = height/0.001 if width == 0 else height/width
+                    
                     res = 1
                     sen = (numpy.sin(numpy.arctan(tan))*res)
                     cos = (numpy.cos(numpy.arctan(tan))*res)
@@ -252,15 +247,9 @@ def enemy_move() -> None:
                         sen = -sen;
                         cos = -cos
 
-                    #print(sen," e ",cos);
                     enemy_position.y += sen*0.1;
                     enemy_position.x += cos*0.1;
                     state = 0
-                    #enemy_position.x += numpy.sin(numpy.arctan(tan))*res;
-                    
-                    #print(numpy.degrees(numpy.arctan(height/width)));
-                    
-                    #print("height = ", height, "| width = ",width);
                     
     global direction_move;
 
@@ -346,7 +335,7 @@ tela_size = Vector2((800, 600))
 tela_center = center(tela_size)
 tela = pygame.display.set_mode(tela_size)
 player_position = Vector2(tela_center)
-player_size = 1
+player_size = 10
 bullets: List[Tuple[bool, Vector2, Vector2, Vector2, Vector2]] = []
 clock = pygame.time.Clock()
 fire_rate = 10
@@ -509,9 +498,7 @@ while inGame:
             bullets[bullets.index(bullet)] = (bullet_collide, bullet_sense, bullet_origin, bullet_direction, bullet_size)
             pygame.draw.rect(tela, [255, 127, 0], (bullet_origin, bullet_size))
 
-    range_enemy = pygame.draw.circle(tela, (95,83,83), (enemy_position.x+10,enemy_position.y+10), radius);
-    raycast_line = pygame.draw.aaline(tela, [255, 255, 0], player_position, raycast_with_collision(player_position, mouse_position(), tela_size, walls))
-    raycast_line_e = pygame.draw.aaline(tela, [0, 255, 0], (enemy_position.x+10,enemy_position.y+10), player_position)
+    # range_enemy = pygame.draw.circle(tela, (95,83,83), (enemy_position.x+10,enemy_position.y+10), radius);
+    # raycast_line_e = pygame.draw.aaline(tela, [0, 255, 0], (enemy_position.x+10,enemy_position.y+10), player_position)
     
     enemy = pygame.draw.rect(tela, (240,42,42), Rect(enemy_position.x, enemy_position.y, 20, 20),2);
-    player = pygame.draw.circle(tela, [255]*3, player_position, 20);
