@@ -52,7 +52,7 @@ def raycast(origin: Vector2, direction: Vector2, max_length: Vector2) -> Vector2
     :rtype: pygame.math.Vector2
     """
 
-     # Calc raycast line
+    # Calc raycast line
     ray = Vector2(0, 0)
     ray_line_slope = line_slope(origin, direction)
 
@@ -74,8 +74,8 @@ def raycast(origin: Vector2, direction: Vector2, max_length: Vector2) -> Vector2
 
     return ray
 
-# raycast enemy
 def straight_raycast() -> Vector2:
+    """raycast enemy"""
     return (enemy_position.x,enemy_position.y+200);
 
 def raycast_with_collision(origin: Vector2, direction: Vector2, max_length: Vector2, collision_list: List[Rect]) -> Vector2:
@@ -218,13 +218,9 @@ def player_move() -> None:
         if key[K_d]:
             player_position.x += 0.2
 
-'''
-    Call functions to update the game loop
-'''
-
-# movement of enemy horizontally
 direction_move = 1;
 def enemy_move() -> None:
+    """movement of enemy horizontally"""
     angle = 0;
     height = 0;
     width = 0;
@@ -272,7 +268,6 @@ def enemy_move() -> None:
 
     enemy_position.x+=0.2*direction_move*state;
 
-
 def update() -> None:
     """Call functions to update the game loop"""
 
@@ -294,7 +289,7 @@ tela_size = Vector2((800, 600))
 tela_center = Vector2(tela_size.x / 2, tela_size.y / 2)
 tela = pygame.display.set_mode(tela_size)
 player_position = Vector2(tela_center)
-player_size = 10
+player_size = 1
 bullets: List[Tuple[bool, Vector2, Vector2, Vector2, Vector2]] = []
 clock = pygame.time.Clock()
 fire_rate = 10
