@@ -1,22 +1,11 @@
 import sys
-<<<<<<< HEAD
-import pygame
-from pygame import mixer
-from pygame.locals import *
-from typing import Sequence, List, Tuple, Callable
-from pygame import Vector2, Rect
-=======
->>>>>>> f841724ef91e1f0f7978db1f8f56606194d53392
 import math
 import numpy
 import pygame
 from pygame.locals import *
 from pygame.font import Font
-from pygame import Vector2, Rect, Color
-from typing import Sequence, List, Tuple
-
-pygame.init()
-pygame.font.init()
+from typing import Sequence, List, Tuple, Callable
+from pygame import Vector2, Rect, Color, mixer
 
 pygame.init()
 mixer.init()
@@ -284,9 +273,13 @@ def enemy_move() -> None:
 
     enemy_position.x+=0.2*direction_move*state;
 
-<<<<<<< HEAD
 def close_tela() -> bool:
-=======
+    for event in pygame.event.get():
+        if event.type == WINDOWCLOSE:
+            exit()
+            return False
+    return True
+
 def center(vector: Vector2):
     """Gets a Vector2 centered at other Vector2
     
@@ -311,16 +304,9 @@ def write(text: str, color: Color = Color(255, 255, 255), position: Vector2 = Ve
 def update() -> None:
     """Call functions to update the game loop"""
 
-    update_screen()
+    update_tela()
     player_move()
     enemy_move();
-
->>>>>>> f841724ef91e1f0f7978db1f8f56606194d53392
-    for event in pygame.event.get():
-        if event.type == WINDOWCLOSE:
-            exit()
-            return False
-    return True
 
 def update_menu(play_enable: bool) -> bool:
     close_tela()
@@ -330,7 +316,6 @@ def update_menu(play_enable: bool) -> bool:
         menu = False
     
     return menu
-
 
 def update() -> None:
     """Call functions to update the game loop"""
@@ -398,7 +383,7 @@ while inMenu:
 
     if left_click:
         #Criando cada um dos botões...
-        if button_jogar_position.x <= mouse_pos.x :#and mouse_pos.x <= button_jogar_position.x + button_size.x and button_jogar_position.y <= mouse_pos.y and mouse_pos.y <= button_jogar_position.y + button_size.y:
+        if button_jogar_position.x <= mouse_pos.x and mouse_pos.x <= button_jogar_position.x + button_size.x and button_jogar_position.y <= mouse_pos.y and mouse_pos.y <= button_jogar_position.y + button_size.y:
             mixer.music.play()
             inGame = True 
         
@@ -448,12 +433,11 @@ while inMenu:
     # tela.blit(text_3, (tela_size.x/2 - 30, tela_size.y/2.5 + 320))
     pygame.display.update()
 
-    
-tela_size.y = tela.get_height()
 while inGame:
     """main loop responsible for drawing things on the tela"""
     inGame = update()
     delta_time = pygame.time.get_ticks()
+    left_click, scroll_click, right_click = pygame.mouse.get_pressed()
 
     walls = [
         pygame.draw.rect(tela, [160]*3, (0, 0, 5, 120)),
@@ -491,7 +475,6 @@ while inGame:
     player = pygame.draw.circle(tela, [255]*3, player_position, player_size)
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, ray)
 
-    left_click, scroll_click, left_click = pygame.mouse.get_pressed()
     
     if left_click:
         if waiting_time == fire_rate:
