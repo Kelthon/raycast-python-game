@@ -1,4 +1,12 @@
 import sys
+<<<<<<< HEAD
+import pygame
+from pygame import mixer
+from pygame.locals import *
+from typing import Sequence, List, Tuple, Callable
+from pygame import Vector2, Rect
+=======
+>>>>>>> f841724ef91e1f0f7978db1f8f56606194d53392
 import math
 import numpy
 import pygame
@@ -10,14 +18,18 @@ from typing import Sequence, List, Tuple
 pygame.init()
 pygame.font.init()
 
+pygame.init()
+mixer.init()
+pygame.font.init()
+
 def exit() -> None:
     """Exit the game"""
 
     pygame.quit()
     sys.exit()
 
-def update_screen() -> None:
-    """Update screen surface"""
+def update_tela() -> None:
+    """Update tela surface"""
     
     pygame.display.flip()
     tela.fill([0]*3)
@@ -272,6 +284,9 @@ def enemy_move() -> None:
 
     enemy_position.x+=0.2*direction_move*state;
 
+<<<<<<< HEAD
+def close_tela() -> bool:
+=======
 def center(vector: Vector2):
     """Gets a Vector2 centered at other Vector2
     
@@ -300,15 +315,46 @@ def update() -> None:
     player_move()
     enemy_move();
 
+>>>>>>> f841724ef91e1f0f7978db1f8f56606194d53392
     for event in pygame.event.get():
         if event.type == WINDOWCLOSE:
             exit()
             return False
-    
     return True
 
+def update_menu(play_enable: bool) -> bool:
+    close_tela()
+   
+    menu = True
+    if play_enable:
+        menu = False
+    
+    return menu
+
+
+def update() -> None:
+    """Call functions to update the game loop"""
+
+    update_tela()
+    player_move()
+    enemy_move();
+    
+    return close_tela()
+
+def creat_button(text: str, size: Vector2, position: Vector2, function: Callable):
+    button: List[Vector2, Vector2]
+    if button_jogar_position.x <= mouse_pos.x <= button_jogar_position.x + button_size.x and button_jogar_position.y <= mouse_pos.y <= button_jogar_position.y + button_size.y:
+        #Aqui será o botão cinza
+        button = pygame.draw.rect(tela,color_light,(button_jogar_position, button_size))  
+          
+    else: 
+        #Aqui será o botão preto
+        button = pygame.draw.rect(tela,color_dark,(button_jogar_position, button_size))    
+    return button
+
 """Declaration constants and variables for the game to works"""
-inGame = True
+inMenu = True
+inGame = False
 walls: List[Rect] = []
 tela_size = Vector2((800, 600))
 tela_center = center(tela_size)
@@ -321,10 +367,91 @@ fire_rate = 10
 waiting_time = fire_rate
 bullet_speed = 1
 enemy_position = Vector2(200,80)
-radius = 100;
+radius = 100
 
+
+'''*** Informações para inserir no meu incial do programa ***'''
+color_white = (255, 255, 255)
+color_light = (128, 128, 128) #Cor do botão mudará para cinza quando passar o mouse por cima
+color_dark = (0, 0, 0) #Cor do butão antes de clicar
+impact_font = pygame.font.SysFont('Impact', 30) #Fonte que sserá usado para o butão
+text_1 = impact_font.render('JOGAR', True, color_white)
+text_2 = impact_font.render('QUIT', True, color_white)
+text_3 = impact_font.render('HELP',True, color_white)
+button_size = Vector2(140, 40)
+button_jogar_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150)
+button_quit_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150)
+button_help_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150 + button_size.y + button_size.y/2)
+'''Aqui é a tela de fundo'''
+
+
+tela_background_image = pygame.image.load("game/public/textures/background.jpg") #olhar o caminho disso aqui
+#Colocando som
+mixer.music.load("game/public/sound effects/ShotGun-Cocking_background.wav")#Olhar o caminho disso aqui
+mixer.music.set_volume(0.7)
+
+while inMenu:
+    inMenu = update_menu(inGame)
+    
+    left_click, scroll_click, right_click = pygame.mouse.get_pressed()
+    mouse_pos = mouse_position()
+
+    if left_click:
+        #Criando cada um dos botões...
+        if button_jogar_position.x <= mouse_pos.x :#and mouse_pos.x <= button_jogar_position.x + button_size.x and button_jogar_position.y <= mouse_pos.y and mouse_pos.y <= button_jogar_position.y + button_size.y:
+            mixer.music.play()
+            inGame = True 
+        
+        if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y + 2 * tela_size.y <= mouse_pos.y <= button_quit_position.y + 2 * tela_size.y:
+            mixer.music.play()
+            pygame.quit() 
+        
+        if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y + 2 * tela_size.y <= mouse_pos.y <= button_help_position.y + 2 * tela_size.y:
+            print('aqui vai as intruções')        
+    
+    
+    tela.blit(tela_background_image, (0, 0))
+    #pegando a posição do mouse
+    # creat_button("Jogar", button_size, button_jogar_position)
+    # #botão iniciar
+    if button_jogar_position.x <= mouse_pos.x <= button_jogar_position.x + button_size.x and button_jogar_position.y <= mouse_pos.y <= button_jogar_position.y + button_size.y:
+        #Aqui será o botão cinza
+        pygame.draw.rect(tela,color_light,(button_jogar_position, button_size))  
+          
+    else: 
+         #Aqui será o botão preto
+        pygame.draw.rect(tela,color_dark,(button_jogar_position, button_size))    
+
+    #Botão quit
+
+    # if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y + button_size.y + button_size.y/2 <= mouse_pos.y <= button_quit_position.y + (button_size.y * 2) + button_size.y/2 :
+    #     #Aqui será o botão cinza
+    #     pygame.draw.rect(tela,color_light,(Vector2(button_quit_position.x, button_quit_position.y + button_size.y + button_size.y/2), button_size))
+    # else: 
+    #      #Aqui será o botão preto
+    #     pygame.draw.rect(tela,color_dark,(Vector2(button_quit_position.x, button_quit_position.y + button_size.y + button_size.y/2), button_size)) 
+
+    # #Aqui será os texto que representarão Jogar e Quit
+        
+    # if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y + button_size.y + button_size.y/2 <= mouse_pos.y <= button_help_position.y + (button_size.y * 2) + button_size.y/2 :
+    #     #Aqui será o botão cinza
+    #     pygame.draw.rect(tela,color_light,(Vector2(button_help_position.x, button_help_position.y + button_size.y + button_size.y/2), button_size))
+    # else: 
+    #      #Aqui será o botão preto
+    #     pygame.draw.rect(tela,color_dark,(Vector2(button_help_position.x, button_help_position.y + button_size.y + button_size.y/2), button_size)) 
+
+    #Aqui será os texto que representarão Jogar e Quit
+    
+     
+    tela.blit(text_1, (tela_size.x/2 - 30,tela_size.y/2.5 + 210))  #texto 
+    # tela.blit(text_2, (tela_size.x/2 - 20, tela_size.y/2.5 + 240))
+    # tela.blit(text_3, (tela_size.x/2 - 30, tela_size.y/2.5 + 320))
+    pygame.display.update()
+
+    
+tela_size.y = tela.get_height()
 while inGame:
-    """main loop responsible for drawing things on the screen"""
+    """main loop responsible for drawing things on the tela"""
     inGame = update()
     delta_time = pygame.time.get_ticks()
 
@@ -364,7 +491,7 @@ while inGame:
     player = pygame.draw.circle(tela, [255]*3, player_position, player_size)
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, ray)
 
-    left_click, scroll_click, right_click = pygame.mouse.get_pressed()
+    left_click, scroll_click, left_click = pygame.mouse.get_pressed()
     
     if left_click:
         if waiting_time == fire_rate:
