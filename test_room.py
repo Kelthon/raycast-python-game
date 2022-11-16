@@ -354,15 +354,16 @@ text_1 = impact_font.render('JOGAR', True, color_white)
 text_2 = impact_font.render('QUIT', True, color_white)
 text_3 = impact_font.render('HELP',True, color_white)
 button_size = Vector2(140, 40)
-button_jogar_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150)
-button_quit_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150)
-button_help_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150 + button_size.y + button_size.y/2)
+button_jogar_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 100)
+button_quit_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 160)
+button_help_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 220)
 '''Aqui é a tela de fundo'''
 
 
-tela_background_image = pygame.image.load("game/public/textures/background.jpg") #olhar o caminho disso aqui
-#Colocando som
-mixer.music.load("game/public/sound effects/ShotGun-Cocking_background.wav")#Olhar o caminho disso aqui
+tela_background_image = pygame.image.load("game/public/textures/background.jpg") 
+#Reproduzir som
+mixer.music.load("game/public/sound effects/ShotGun-Cocking_background.wav")
+
 mixer.music.set_volume(0.7)
 
 while inMenu:
@@ -377,14 +378,17 @@ while inMenu:
             mixer.music.play()
             inGame = True 
         
+        if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y  <= mouse_pos.y <= button_quit_position.y + 2 * tela_size.y:
+            mixer.music.play()
+            print('aqui vai as intruções')        
+        
         if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y + 2 * tela_size.y <= mouse_pos.y <= button_quit_position.y + 2 * tela_size.y:
             mixer.music.play()
             pygame.quit() 
         
-        if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y + 2 * tela_size.y <= mouse_pos.y <= button_help_position.y + 2 * tela_size.y:
-            print('aqui vai as intruções')        
     
     
+            
     tela.blit(tela_background_image, (0, 0))
     #pegando a posição do mouse
     # creat_button("Jogar", button_size, button_jogar_position)
@@ -396,10 +400,20 @@ while inMenu:
     else: 
          #Aqui será o botão preto
         pygame.draw.rect(tela,color_dark,(button_jogar_position, button_size))    
-
+    #batton help
+        
     #Botão quit
+    if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y  <= mouse_pos.y <= button_quit_position.y + 2 * tela_size.y:
+        pygame.draw.rect(tela, color_light ,(button_quit_position, button_size))
+    else:
+        pygame.draw.rect(tela, color_dark, (button_quit_position, button_size))
+    
+    if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y  <= mouse_pos.y <= button_help_position.y + 2 * tela_size.y:
+        pygame.draw.rect(tela, color_dark, (button_help_position, button_size))
+    else: 
+        pygame.draw.rect(tela, color_dark, (button_help_position, button_size))
 
-    # if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y + button_size.y + button_size.y/2 <= mouse_pos.y <= button_quit_position.y + (button_size.y * 2) + button_size.y/2 :
+    # if button_quit_position.x <= mou;;çç;~.ç;.ç;..,l..l..ç/;./;./;./;se_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y + button_size.y + button_size.y/2 <= mouse_pos.y <= button_quit_position.y + (button_size.y * 2) + button_size.y/2 :
     #     #Aqui será o botão cinza
     #     pygame.draw.rect(tela,color_light,(Vector2(button_quit_position.x, button_quit_position.y + button_size.y + button_size.y/2), button_size))
     # else: 
