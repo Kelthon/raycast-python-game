@@ -1,10 +1,14 @@
 import sys
-import pygame
-from pygame.locals import *
-from typing import Sequence, List, Tuple
-from pygame import Vector2, Rect
 import math
 import numpy
+import pygame
+from pygame.locals import *
+from pygame.font import Font
+from pygame import Vector2, Rect, Color
+from typing import Sequence, List, Tuple
+
+pygame.init()
+pygame.font.init()
 
 def exit() -> None:
     """Exit the game"""
@@ -268,6 +272,27 @@ def enemy_move() -> None:
 
     enemy_position.x+=0.2*direction_move*state;
 
+def center(vector: Vector2):
+    """Gets a Vector2 centered at other Vector2
+    
+    :param vector: vector to calculates center
+    :type vector: pygame.math.Vector2
+
+    :returns: Vector2 thats represent a center
+    :rtype vector: pygame.math.Vector2
+    """
+    return Vector2(vector.x / 2, vector.y / 2)
+
+def get_font(font_name: str = pygame.font.get_default_font(), size: float = 25, bold: bool = False, italic: bool = False) -> Font:
+    """Returns a system font"""
+    font  = pygame.font.SysFont(font_name, size, bold, italic)
+    return font
+
+def write(text: str, color: Color = Color(255, 255, 255), position: Vector2 = Vector2(0, 0), bg_color = None, font: Font = get_font()) -> Rect:
+    """blit a text in screen"""
+    render = font.render(text, True, color, bg_color)
+    return pygame.display.get_surface().blit(render, position)
+
 def update() -> None:
     """Call functions to update the game loop"""
 
@@ -286,7 +311,7 @@ def update() -> None:
 inGame = True
 walls: List[Rect] = []
 tela_size = Vector2((800, 600))
-tela_center = Vector2(tela_size.x / 2, tela_size.y / 2)
+tela_center = center(tela_size)
 tela = pygame.display.set_mode(tela_size)
 player_position = Vector2(tela_center)
 player_size = 1
@@ -339,6 +364,8 @@ while inGame:
     player = pygame.draw.circle(tela, [255]*3, player_position, player_size)
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, ray)
 
+    write("Hello game!")
+
     left_click, scroll_click, right_click = pygame.mouse.get_pressed()
     
     if left_click:
@@ -358,35 +385,34 @@ while inGame:
         else:
             collide_x = False
             collide_y = False
-            position = Vector2(bullet_origin.x, bullet_origin.y)
             
             if bullet_direction.y < bullet_origin.y:
                 if bullet_sense.y < 0:
-                    position.y = bullet_origin.y - bullet_speed
+                    bullet_origin.y -= bullet_speed
                 else:
                     collide_y = True
             else:
                 if bullet_sense.y > 0:
-                    position.y = bullet_origin.y + bullet_speed
+                    bullet_origin.y += bullet_speed
                 else:
                     collide_y = True
 
             if bullet_direction.x < bullet_origin.x:
                 if bullet_sense.x < 0:
-                    position.x = bullet_origin.x - bullet_speed
+                    bullet_origin.x -= bullet_speed
                 else:
                     collide_x = True
 
             else:
                 if bullet_sense.x > 0:
-                    position.x = bullet_origin.x +bullet_speed
+                    bullet_origin.x += bullet_speed
                 else:
                     collide_x = True
 
             if collide_x and collide_y:
                 bullet_collide = True
             
-            bullet_origin = position
+            
             bullet_collide = projectile_collided(bullet_origin, bullet_direction, walls) | bullet_collide
             bullets[bullets.index(bullet)] = (bullet_collide, bullet_sense, bullet_origin, bullet_direction, bullet_size)
 
