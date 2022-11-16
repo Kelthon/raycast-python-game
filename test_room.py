@@ -338,7 +338,7 @@ player_position = Vector2(tela_center)
 player_size = 10
 bullets: List[Tuple[bool, Vector2, Vector2, Vector2, Vector2]] = []
 clock = pygame.time.Clock()
-fire_rate = 10
+fire_rate = 100
 waiting_time = fire_rate
 bullet_speed = 1
 enemy_position = Vector2(200,80)
@@ -490,7 +490,10 @@ while inGame:
 
             b_cos = numpy.cos(b_angle)
             b_sin = numpy.sin(b_angle) 
-            
+            if b_width<0:
+                b_sin = -b_sin
+                b_cos = -b_cos
+                
             bullet_origin.y += b_cos * 0.1
             bullet_origin.x += b_sin * 0.1
             
