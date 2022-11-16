@@ -377,43 +377,25 @@ while inGame:
 
     for bullet in bullets:
         bullet_collide, bullet_sense, bullet_origin, bullet_direction, bullet_size = bullet
-        
         if bullet_collide:
             del bullets[bullets.index(bullet)]
         else:
             collide_x = False
             collide_y = False
             
-            if bullet_direction.y < bullet_origin.y:
-                if bullet_sense.y < 0:
-                    bullet_origin.y -= bullet_speed
-                else:
-                    collide_y = True
-            else:
-                if bullet_sense.y > 0:
-                    bullet_origin.y += bullet_speed
-                else:
-                    collide_y = True
-
-            if bullet_direction.x < bullet_origin.x:
-                if bullet_sense.x < 0:
-                    bullet_origin.x -= bullet_speed
-                else:
-                    collide_x = True
-
-            else:
-                if bullet_sense.x > 0:
-                    bullet_origin.x += bullet_speed
-                else:
-                    collide_x = True
-
-            if collide_x and collide_y:
-                bullet_collide = True
+            b_width = bullet_origin.x - bullet_direction.x
+            b_heigth = bullet_direction.y - bullet_origin.y
             
+            b_angle = numpy.degrees(numpy.arctan(b_heigth / b_width))
+
+            b_cos = numpy.cos(b_angle)
+            b_sin = numpy.sin(b_angle) 
+            
+            bullet_origin.y += b_cos * 0.1
+            bullet_origin.x += b_sin * 0.1
             
             bullet_collide = projectile_collided(bullet_origin, bullet_direction, walls) | bullet_collide
             bullets[bullets.index(bullet)] = (bullet_collide, bullet_sense, bullet_origin, bullet_direction, bullet_size)
-
             pygame.draw.rect(tela, [255, 127, 0], (bullet_origin, bullet_size))
 
     range_enemy = pygame.draw.circle(tela, (95,83,83), (enemy_position.x+10,enemy_position.y+10), radius);
