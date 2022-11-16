@@ -156,15 +156,16 @@ def enemy_move() -> None:
                     width = player_position.x - enemy_position.x-10;
                     height = player_position.y - enemy_position.y-10
                     tan = height/width;
-                    
+                    h_w = (height,width);
+                    print(h_w);
                     res = 1
-                    sen = numpy.sin(numpy.arctan(tan))*res
-                    cos = numpy.cos(numpy.arctan(tan))*res
+                    sen = (numpy.sin(numpy.arctan(tan))*res)
+                    cos = (numpy.cos(numpy.arctan(tan))*res)
                     if (width < 0):
                         sen = -sen;
                         cos = -cos
 
-                    #print(sen);
+                    #print(sen," e ",cos);
                     enemy_position.y += sen*0.1;
                     enemy_position.x += cos*0.1;
                     state = 0
@@ -184,7 +185,7 @@ def enemy_move() -> None:
 
         direction_move = -1; 
 
-    enemy_position.x+=0.2*direction_move*state;
+    enemy_position.x+=0.1*direction_move*state;
 
 
 def update() -> None:
