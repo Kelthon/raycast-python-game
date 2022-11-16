@@ -19,3 +19,5 @@ class Entity(ABC):
     @abstractmethod
     def update(self):
         pass
+
+

@@ -3,6 +3,8 @@ import pygame
 from pygame.locals import *
 from typing import Sequence, List, Tuple
 from pygame import Vector2, Rect
+import math
+import numpy
 
 def exit() -> None:
     """Exit the game"""
@@ -28,7 +30,7 @@ def line_slope(origin: Vector2, direction: Vector2) -> float:
     :rtype: float
     """
     
-    slope = 0
+    slope = -100
 
     if direction.x != origin.x and direction.y != origin.y:
         slope_direction = origin.y - direction.y if direction.y < origin.y else direction.y - origin.y
@@ -71,6 +73,10 @@ def raycast(origin: Vector2, direction: Vector2, max_length: Vector2) -> Vector2
         ray.x = direction.x + (slope_direction / ray_line_slope)
 
     return ray
+
+# raycast enemy
+def straight_raycast() -> Vector2:
+    return (enemy_position.x,enemy_position.y+200);
 
 def raycast_with_collision(origin: Vector2, direction: Vector2, max_length: Vector2, collision_list: List[Rect]) -> Vector2:
     """Simulates a collision in raycast vector
@@ -198,25 +204,81 @@ def player_move() -> None:
 
     if not "top" in collision:
         if key[K_w]:
-            player_position.y -= 0.1
+            player_position.y -= 0.2
     
     if not "bottom" in collision:
         if key[K_s]:
-            player_position.y += 0.1
+            player_position.y += 0.2
 
     if not "left" in collision:
         if key[K_a]:
-            player_position.x -= 0.1
+            player_position.x -= 0.2
     
     if not "right" in collision:
         if key[K_d]:
-            player_position.x += 0.1
+            player_position.x += 0.2
+
+'''
+    Call functions to update the game loop
+'''
+
+# movement of enemy horizontally
+direction_move = 1;
+def enemy_move() -> None:
+    angle = 0;
+    height = 0;
+    width = 0;
+    tan = 0;
+    res = 0
+    state = 1;
+    
+    if player_position.x >= enemy_position.x+10-radius:
+        if player_position.x <= enemy_position.x+10+radius:
+            if player_position.y >= enemy_position.y+10-radius:
+                if player_position.y <= enemy_position.y+10+radius:
+                    """ enemy_position.x +=
+                    enemy_position.y += """
+                    #print("player_position = ",player_position,"| enemy_position = ",enemy_position, "| raycast_e = ", raycast_line_e);
+                    width = player_position.x - enemy_position.x-10;
+                    height = player_position.y - enemy_position.y-10
+                    tan = height/width;
+                    
+                    res = 1
+                    sen = numpy.sin(numpy.arctan(tan))*res
+                    cos = numpy.cos(numpy.arctan(tan))*res
+                    if (width < 0):
+                        sen = -sen;
+                        cos = -cos
+
+                    #print(sen);
+                    enemy_position.y += sen*0.1;
+                    enemy_position.x += cos*0.1;
+                    state = 0
+                    #enemy_position.x += numpy.sin(numpy.arctan(tan))*res;
+                    
+                    #print(numpy.degrees(numpy.arctan(height/width)));
+                    
+                    #print("height = ", height, "| width = ",width);
+                    
+    global direction_move;
+
+    if (math.floor(enemy_position.x) == 120):
+
+        direction_move = 1;
+
+    elif (math.floor(enemy_position.x) == 660):
+
+        direction_move = -1; 
+
+    enemy_position.x+=0.2*direction_move*state;
+
 
 def update() -> None:
     """Call functions to update the game loop"""
 
     update_screen()
     player_move()
+    enemy_move();
 
     for event in pygame.event.get():
         if event.type == WINDOWCLOSE:
@@ -238,6 +300,8 @@ clock = pygame.time.Clock()
 fire_rate = 10
 waiting_time = fire_rate
 bullet_speed = 1
+enemy_position = Vector2(200,80)
+radius = 100;
 
 while inGame:
     """main loop responsible for drawing things on the screen"""
@@ -276,7 +340,6 @@ while inGame:
         pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y + 100, 100, 5)),
         pygame.draw.rect(tela, [160]*3, (tela_center.x + 55, tela_center.y + 100, 100, 5)),
     ]
-
     ray = raycast_with_collision(player_position, mouse_position(), tela_size, walls)
     player = pygame.draw.circle(tela, [255]*3, player_position, player_size)
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, ray)
@@ -296,11 +359,10 @@ while inGame:
         bullet_collide, bullet_sense, bullet_origin, bullet_direction, bullet_size = bullet
         
         if bullet_collide:
-            bullets.remove(bullet)
+            del bullets[bullets.index(bullet)]
         else:
             collide_x = False
             collide_y = False
-            delta = Vector2(abs(bullet_origin.x - bullet_direction.x), abs(bullet_origin.y - bullet_direction.y))
             position = Vector2(bullet_origin.x, bullet_origin.y)
             
             if bullet_direction.y < bullet_origin.y:
@@ -334,4 +396,10 @@ while inGame:
             bullets[bullets.index(bullet)] = (bullet_collide, bullet_sense, bullet_origin, bullet_direction, bullet_size)
 
             pygame.draw.rect(tela, [255, 127, 0], (bullet_origin, bullet_size))
-        
+
+    range_enemy = pygame.draw.circle(tela, (95,83,83), (enemy_position.x+10,enemy_position.y+10), radius);
+    raycast_line = pygame.draw.aaline(tela, [255, 255, 0], player_position, raycast_with_collision(player_position, mouse_position(), tela_size, walls))
+    raycast_line_e = pygame.draw.aaline(tela, [0, 255, 0], (enemy_position.x+10,enemy_position.y+10), player_position)
+    
+    enemy = pygame.draw.rect(tela, (240,42,42), Rect(enemy_position.x, enemy_position.y, 20, 20),2);
+    player = pygame.draw.circle(tela, [255]*3, player_position, 20);
