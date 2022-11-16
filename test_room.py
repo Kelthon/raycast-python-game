@@ -1,11 +1,22 @@
 import sys
+<<<<<<< HEAD
 import pygame
 from pygame import mixer
 from pygame.locals import *
 from typing import Sequence, List, Tuple, Callable
 from pygame import Vector2, Rect
+=======
+>>>>>>> f841724ef91e1f0f7978db1f8f56606194d53392
 import math
 import numpy
+import pygame
+from pygame.locals import *
+from pygame.font import Font
+from pygame import Vector2, Rect, Color
+from typing import Sequence, List, Tuple
+
+pygame.init()
+pygame.font.init()
 
 pygame.init()
 mixer.init()
@@ -273,7 +284,38 @@ def enemy_move() -> None:
 
     enemy_position.x+=0.2*direction_move*state;
 
+<<<<<<< HEAD
 def close_tela() -> bool:
+=======
+def center(vector: Vector2):
+    """Gets a Vector2 centered at other Vector2
+    
+    :param vector: vector to calculates center
+    :type vector: pygame.math.Vector2
+
+    :returns: Vector2 thats represent a center
+    :rtype vector: pygame.math.Vector2
+    """
+    return Vector2(vector.x / 2, vector.y / 2)
+
+def get_font(font_name: str = pygame.font.get_default_font(), size: float = 25, bold: bool = False, italic: bool = False) -> Font:
+    """Returns a system font"""
+    font  = pygame.font.SysFont(font_name, size, bold, italic)
+    return font
+
+def write(text: str, color: Color = Color(255, 255, 255), position: Vector2 = Vector2(0, 0), bg_color = None, font: Font = get_font()) -> Rect:
+    """blit a text in screen"""
+    render = font.render(text, True, color, bg_color)
+    return pygame.display.get_surface().blit(render, position)
+
+def update() -> None:
+    """Call functions to update the game loop"""
+
+    update_screen()
+    player_move()
+    enemy_move();
+
+>>>>>>> f841724ef91e1f0f7978db1f8f56606194d53392
     for event in pygame.event.get():
         if event.type == WINDOWCLOSE:
             exit()
@@ -315,7 +357,7 @@ inMenu = True
 inGame = False
 walls: List[Rect] = []
 tela_size = Vector2((800, 600))
-tela_center = Vector2(tela_size.x / 2, tela_size.y / 2)
+tela_center = center(tela_size)
 tela = pygame.display.set_mode(tela_size)
 player_position = Vector2(tela_center)
 player_size = 1
@@ -468,35 +510,34 @@ while inGame:
         else:
             collide_x = False
             collide_y = False
-            position = Vector2(bullet_origin.x, bullet_origin.y)
             
             if bullet_direction.y < bullet_origin.y:
                 if bullet_sense.y < 0:
-                    position.y = bullet_origin.y - bullet_speed
+                    bullet_origin.y -= bullet_speed
                 else:
                     collide_y = True
             else:
                 if bullet_sense.y > 0:
-                    position.y = bullet_origin.y + bullet_speed
+                    bullet_origin.y += bullet_speed
                 else:
                     collide_y = True
 
             if bullet_direction.x < bullet_origin.x:
                 if bullet_sense.x < 0:
-                    position.x = bullet_origin.x - bullet_speed
+                    bullet_origin.x -= bullet_speed
                 else:
                     collide_x = True
 
             else:
                 if bullet_sense.x > 0:
-                    position.x = bullet_origin.x +bullet_speed
+                    bullet_origin.x += bullet_speed
                 else:
                     collide_x = True
 
             if collide_x and collide_y:
                 bullet_collide = True
             
-            bullet_origin = position
+            
             bullet_collide = projectile_collided(bullet_origin, bullet_direction, walls) | bullet_collide
             bullets[bullets.index(bullet)] = (bullet_collide, bullet_sense, bullet_origin, bullet_direction, bullet_size)
 
