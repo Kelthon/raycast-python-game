@@ -364,8 +364,6 @@ while inGame:
     player = pygame.draw.circle(tela, [255]*3, player_position, player_size)
     raycast_line = pygame.draw.aaline(tela, [0, 255, 0], player_position, ray)
 
-    write("Hello game!")
-
     left_click, scroll_click, right_click = pygame.mouse.get_pressed()
     
     if left_click:
