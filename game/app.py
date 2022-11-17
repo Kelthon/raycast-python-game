@@ -470,9 +470,18 @@ class Game(object):
         self.sort_items()
         self.score = 0
         
+    def get_random_items(self):
+        all = [aux_digital, aux_oculos, bolsa_petista, cachaca51_1, cachaca51_2, coin, marlboro, meat, money_1, money_1, money_bag, purse, small_purse, suitcase, xicara]
+        rand = []
+        for i in range(0, 4):
+            rand.append(all[randint(0, len(all) - 1)])
+        return rand
 
     def run(self):
+        items = self.get_random_items()
+        positions = [Vector2(50, 50), Vector2(144, 50 + items_size.y + 5), Vector2(711, 54 + 2 * items_size.y), Vector2(400, 65 + 3 * items_size.y)]
         while self.inMenu:
+            tela.blit(tela_background_image, (0, 0))
             self.inMenu = update_menu(self.inGame)
             left_click, scroll_click, right_click = pygame.mouse.get_pressed()
             mouse_pos = mouse_position()
@@ -490,10 +499,30 @@ class Game(object):
                 
                 if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y  <= mouse_pos.y <= button_help_position.y + button_size.y:
                     mixer.music.play()
-                    print('aqui vai as intruções')        
-            
-            
-            tela.blit(tela_background_image, (0, 0))
+                    pygame.draw.rect(tela, [60]*3, (Vector2(tela_center.x - 100, tela_center.y - 130), Vector2(tela_center.x - 180, tela_center.y - 140)))
+                    write("Press WASD to walk", position=Vector2(tela_center.x - 70, tela_center.y))      
+                    write("Click to attack", position=Vector2(tela_center.x - 70, tela_center.y - 60))      
+                    write("Press Esc to skip", position=Vector2(tela_center.x - 70, tela_center.y - 120))
+
+
+            for pos in positions:
+                index = positions.index(pos)
+                if index % 2 == 0:
+                    if pos.x < 0 - items[index].get_rect().w:
+                        pos.x = tela_size.x
+                    else:
+                        pos.x -= 0.5
+                else:
+                    if pos.x > tela_size.x:
+                        pos.x = 0 - items[index].get_rect().w
+                    else:
+                        pos.x += 0.5
+
+
+            for i in range(0, len(items)):
+                tela.blit(items[i], positions[i])
+        
+
             #pegando a posição do mouse
             # creat_button("Jogar", button_size, button_jogar_position)
             # #botão iniciar
