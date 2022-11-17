@@ -234,9 +234,9 @@ text_1 = impact_font.render('JOGAR', True, color_white)
 text_2 = impact_font.render('QUIT', True, color_white)
 text_3 = impact_font.render('HELP',True, color_white)
 button_size = Vector2(140, 40)
-button_jogar_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150)
+button_jogar_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 100)
 button_quit_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150)
-button_help_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150 + button_size.y + button_size.y/2)
+button_help_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 200)
 '''Aqui é a tela de fundo'''
 
 
@@ -395,16 +395,16 @@ class Game(object):
 
             if left_click:
                 #Criando cada um dos botões...
-                if button_jogar_position.x <= mouse_pos.x and mouse_pos.x <= button_jogar_position.x + button_size.x and button_jogar_position.y <= mouse_pos.y and mouse_pos.y <= button_jogar_position.y + button_size.y:
+                if button_jogar_position.x <= mouse_pos.x <= button_jogar_position.x + button_size.x and button_jogar_position.y <= mouse_pos.y <= button_jogar_position.y + button_size.y:
                     mixer.music.play()
                     self.inGame = True
                     return self.play()
                 
-                if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y + 2 * tela_size.y <= mouse_pos.y <= button_quit_position.y + 2 * tela_size.y:
+                if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y <= mouse_pos.y <= button_quit_position.y + button_size.y:
                     mixer.music.play()
                     pygame.quit() 
                 
-                if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y + 2 * tela_size.y <= mouse_pos.y <= button_help_position.y + 2 * tela_size.y:
+                if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y  <= mouse_pos.y <= button_help_position.y + button_size:
                     print('aqui vai as intruções')        
             
             
@@ -421,29 +421,29 @@ class Game(object):
                 pygame.draw.rect(tela,color_dark,(button_jogar_position, button_size))    
 
             #Botão quit
-
-            # if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y + button_size.y + button_size.y/2 <= mouse_pos.y <= button_quit_position.y + (button_size.y * 2) + button_size.y/2 :
-            #     #Aqui será o botão cinza
-            #     pygame.draw.rect(tela,color_light,(Vector2(button_quit_position.x, button_quit_position.y + button_size.y + button_size.y/2), button_size))
-            # else: 
-            #      #Aqui será o botão preto
-            #     pygame.draw.rect(tela,color_dark,(Vector2(button_quit_position.x, button_quit_position.y + button_size.y + button_size.y/2), button_size)) 
+            
+            if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y <= mouse_pos.y <= button_quit_position.y + button_size.y:
+                #Aqui será o botão cinza
+                pygame.draw.rect(tela,color_light,(button_quit_position, button_size))
+            else: 
+                #Aqui será o botão preto
+                pygame.draw.rect(tela,color_dark,(button_quit_position, button_size)) 
 
             # #Aqui será os texto que representarão Jogar e Quit
                 
-            # if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y + button_size.y + button_size.y/2 <= mouse_pos.y <= button_help_position.y + (button_size.y * 2) + button_size.y/2 :
-            #     #Aqui será o botão cinza
-            #     pygame.draw.rect(tela,color_light,(Vector2(button_help_position.x, button_help_position.y + button_size.y + button_size.y/2), button_size))
-            # else: 
-            #      #Aqui será o botão preto
-            #     pygame.draw.rect(tela,color_dark,(Vector2(button_help_position.x, button_help_position.y + button_size.y + button_size.y/2), button_size)) 
+            if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y  <= mouse_pos.y <= button_help_position.y + button_size.y:
+                #Aqui será o botão cinza
+                pygame.draw.rect(tela,color_light,(button_help_position, button_size))
+            else: 
+                #Aqui será o botão preto
+                pygame.draw.rect(tela,color_dark,(button_help_position, button_size))
 
             #Aqui será os texto que representarão Jogar e Quit
             
             
-            tela.blit(text_1, (tela_size.x/2 - 30,tela_size.y/2.5 + 210))  #texto 
-            # tela.blit(text_2, (tela_size.x/2 - 20, tela_size.y/2.5 + 240))
-            # tela.blit(text_3, (tela_size.x/2 - 30, tela_size.y/2.5 + 320))
+            tela.blit(text_1, (button_jogar_position.x + 30,button_jogar_position.y))#texto 
+            tela.blit(text_2, (button_quit_position.x + 40, button_quit_position.y ))
+            tela.blit(text_3, (button_help_position.x + 40, button_help_position.y ))
             pygame.display.update()
 
     def play(self):
