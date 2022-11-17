@@ -371,8 +371,8 @@ class Game(object):
                                 sen = -sen
                                 cos = -cos
 
-                            enemy_position.y += sen*0.1
-                            enemy_position.x += cos*0.1
+                            enemy_position.y += sen*0.2
+                            enemy_position.x += cos*0.2
                             state = 0
 
             if (math.floor(enemy_position.x) == 120):
@@ -384,7 +384,7 @@ class Game(object):
                 self.direction_move  = -1; 
    
 
-            enemy_position.x+=0.1*self.direction_move*state
+            enemy_position.x+=0.2*self.direction_move*state
 
     def get_collision_direction(self, rects: List[Rect]) -> List[str]:
         """Returns a string where has the collision with player
