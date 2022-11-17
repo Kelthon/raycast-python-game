@@ -20,6 +20,7 @@ def exit() -> None:
 
 def update_tela() -> None:
     """Update tela surface"""
+    
     pygame.display.flip()
     tela.fill([0]*3)
     tela.blit(skybox, (0, 0))
@@ -269,23 +270,19 @@ class Game(object):
         self.player_position = Vector2(tela_center)
         self.bullets: List[Tuple[bool, Vector2, Vector2, Vector2]] = []
         self.bullet_speed = 1
-        self.enemy_position = Vector2(200,80)
+        self.enemy_position =[Vector2(200,80),Vector2(200,300)]
         self.radius = 100
         self.player: Rect =  pygame.draw.circle(tela, [255]*3, self.player_position, self.player_size)
-        self.enemy = pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position.x, self.enemy_position.y, 20, 20),2)
+        self.enemy = []
         self.direction_move = 1
+        self.i= -1
         self.items: List[Tuple(Surface, int)] = []
         self.items_taken:List[Tuple(Surface, int)]  = []
         self.sort_items()
         self.score = 0
-        self.enemy_is_die = False
-    
-    def respawn(self):
-        new_pos = Vector2(randint(50, tela_size.x - 50), randint(50, tela_size.y - 50))
-        self.enemy_position = new_pos
 
     def phase_1(self):
-        self.walls = [
+            self.walls = [
                     pygame.draw.rect(tela, [160]*3, (0, 0, 5, 120)),
                     pygame.draw.rect(tela, [160]*3, (5, 0, 115, 5)),
                     pygame.draw.rect(tela, [160]*3, (0, 120, 70, 5)),
@@ -337,9 +334,9 @@ class Game(object):
         for i in range(0, 4):
             self.items.append((all[randint(0, len(all) - 1)], i))
 
-    def enemy_die(self):
-        self.enemy_is_die = True
-        self.enemy_position = Vector2(-100, -100)
+    def enemy_die(self, index):
+        new_pos = Vector2(randint(50, tela_size.x - 50), randint(50, tela_size.y - 50))
+        self.enemy_position[index] = new_pos
 
     def update(self) -> None:
         """Call functions to update the game loop"""
@@ -358,34 +355,36 @@ class Game(object):
         res = 0
         state = 1
         
-        if self.player_position.x >= self.enemy_position.x+10-self.radius:
-            if self.player_position.x <= self.enemy_position.x+10+self.radius:
-                if self.player_position.y >= self.enemy_position.y+10-self.radius:
-                    if self.player_position.y <= self.enemy_position.y+10+self.radius:
-                        width = self.player_position.x - self.enemy_position.x-10
-                        height = self.player_position.y - self.enemy_position.y-10
-                        tan = height/0.001 if width == 0 else height/width
-                        
-                        res = 1
-                        sen = (numpy.sin(numpy.arctan(tan))*res)
-                        cos = (numpy.cos(numpy.arctan(tan))*res)
-                        if (width < 0):
-                            sen = -sen
-                            cos = -cos
+        for enemy_position in self.enemy_position:
+            if self.player_position.x >= enemy_position.x+10-self.radius:
+                if self.player_position.x <= enemy_position.x+10+self.radius:
+                    if self.player_position.y >= enemy_position.y+10-self.radius:
+                        if self.player_position.y <= enemy_position.y+10+self.radius:
+                            width = self.player_position.x - enemy_position.x-10
+                            height = self.player_position.y - enemy_position.y-10
+                            tan = height/0.001 if width == 0 else height/width
+                            
+                            res = 1
+                            sen = (numpy.sin(numpy.arctan(tan))*res)
+                            cos = (numpy.cos(numpy.arctan(tan))*res)
+                            if (width < 0):
+                                sen = -sen
+                                cos = -cos
 
-                        self.enemy_position.y += sen*0.1
-                        self.enemy_position.x += cos*0.1
-                        state = 0
+                            enemy_position.y += sen*0.1
+                            enemy_position.x += cos*0.1
+                            state = 0
 
-        if (math.floor(self.enemy_position.x) == 120):
+            if (math.floor(enemy_position.x) == 120):
 
-            self.direction_move = 1;
+                self.direction_move = 1;
 
-        elif (math.floor(self.enemy_position.x) == 660):
+            elif (math.floor(enemy_position.x) == 660):
 
-            self.direction_move = -1; 
+                self.direction_move  = -1; 
+   
 
-        self.enemy_position.x+=0.1*self.direction_move*state
+            enemy_position.x+=0.1*self.direction_move*state
 
     def get_collision_direction(self, rects: List[Rect]) -> List[str]:
         """Returns a string where has the collision with player
@@ -460,11 +459,12 @@ class Game(object):
         self.player_position = Vector2(tela_center)
         self.bullets = []
         self.bullet_speed = 1
-        self.enemy_position = Vector2(200,80)
+        self.enemy_position = [Vector2(200,80),Vector2(200,300)]
         self.radius = 100
-        self.player: Rect =  pygame.draw.circle(tela, [255]*3, self.player_position, self.player_size)
-        self.enemy = pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position.x, self.enemy_position.y, 20, 20),2)
+        self.player: Rect = pygame.draw.circle(tela, [255]*3, self.player_position, self.player_size)
+        self.enemy = []
         self.direction_move = 1
+        self.i= -1
         self.items: List[Tuple(Surface, int)] = []
         self.items_taken:List[Tuple(Surface, int)]  = []
         self.sort_items()
@@ -520,9 +520,9 @@ class Game(object):
 
 
             for i in range(0, len(items)):
-                tela.blit(items[i], positions[i])
-        
-
+                tela.blit(items[i], positions[i])      
+            
+            
             #pegando a posição do mouse
             # creat_button("Jogar", button_size, button_jogar_position)
             # #botão iniciar
@@ -571,7 +571,12 @@ class Game(object):
                 left_click, scroll_click, right_click = pygame.mouse.get_pressed()
 
                 self.player = pygame.draw.circle(tela, [255]*3, self.player_position, self.player_size)
-                self.enemy = pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position.x, self.enemy_position.y, 20, 20),2)
+                self.enemy = [
+                    pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position[0].x, self.enemy_position[0].y, 20, 20),2), 
+                    pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position[1].x, self.enemy_position[1].y, 20, 20),2)
+    
+                ]
+
                 self.ray = raycast_with_collision(self.player_position, mouse_position(), tela_size, self.walls)
                 self.raycast_line = pygame.draw.aaline(tela, [0, 255, 0], self.player_position, self.ray)
                 
@@ -650,17 +655,15 @@ class Game(object):
                         bullet_collide = projectile_collided(bullet_origin, bullet_size, self.walls) | bullet_collide
                         self.bullets[self.bullets.index(bullet)] = (bullet_collide, bullet_origin, bullet_direction, bullet_size)
                         bullet_rect = pygame.draw.rect(tela, [255, 127, 0], (bullet_origin, bullet_size))
+                    self.i= -1
+                for enemy in self.enemy:
+                    self.i = self.i+1
+                    if bullet_rect.colliderect(enemy):
+                        del self.bullets[self.bullets.index(bullet)]
+                        self.enemy_die(self.i)
 
-                if bullet_rect.colliderect(self.enemy):
-                    del self.bullets[self.bullets.index(bullet)]
-                    self.enemy_die()
-
-                if self.enemy_is_die:
-                    self.enemy_is_die = False
-                    self.respawn()
-
-                if self.enemy.colliderect(self.player):
-                    self.inPause = True
+                    if enemy.colliderect(self.player):
+                        self.inPause = True
 
                 default_bold = get_font(bold = True)
                 text_center = center(Vector2(30,0))
