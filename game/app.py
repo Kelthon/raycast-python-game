@@ -625,12 +625,13 @@ class Game(object):
                     next_phase = True
 
                 if left_click:
-                    if self.waiting_time == self.fire_rate:
+                    if self.waiting_time >= self.fire_rate:
                         start_position = Vector2(self.player_position.x - 2.5, self.player_position.y - 2.5)
                         self.bullets.append((False, start_position, self.ray, Vector2(5, 5)))
                         self.waiting_time = 0
                     else:
                         self.waiting_time += abs(pygame.time.get_ticks() - delta_time)
+                    write(f"{self.waiting_time}")
 
                 for bullet in self.bullets:
                     bullet_collide, bullet_origin, bullet_direction, bullet_size = bullet
