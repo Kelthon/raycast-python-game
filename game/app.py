@@ -501,10 +501,10 @@ class Game(object):
                 
                 if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y  <= mouse_pos.y <= button_help_position.y + button_size.y:
                     mixer.music.play()
-                    pygame.draw.rect(tela, [60]*3, (Vector2(tela_center.x - 100, tela_center.y - 130), Vector2(tela_center.x - 180, tela_center.y - 140)))
-                    write("Press WASD to walk", position=Vector2(tela_center.x - 70, tela_center.y))      
-                    write("Click to attack", position=Vector2(tela_center.x - 70, tela_center.y - 60))      
-                    write("Press Esc to skip", position=Vector2(tela_center.x - 70, tela_center.y - 120))
+                    pygame.draw.rect(tela, [128]*3, (Vector2(tela_center.x - 100, tela_center.y - 80), Vector2(tela_center.x - 180, tela_center.y - 140)))
+                    write("Press WASD to walk", position=Vector2(tela_center.x - 70, tela_center.y + 50))      
+                    write("Click to attack", position=Vector2(tela_center.x - 70, tela_center.y - 10))      
+                    write("Press Esc to skip", position=Vector2(tela_center.x - 70, tela_center.y - 65))
 
 
             for pos in positions:
