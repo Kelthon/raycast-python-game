@@ -216,7 +216,7 @@ button_quit_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 
 button_help_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 200)
 '''Aqui é a tela de fundo'''
 
-tela_background_image = pygame.image.load("game/public/textures/background.jpg") #olhar o caminho disso aqui
+tela_background_image = pygame.image.load("./game/public/textures/skybox_2.png") #olhar o caminho disso aqui
 
 #items
 items_size = Vector2(100, 100)
@@ -482,6 +482,8 @@ class Game(object):
         positions = [Vector2(50, 50), Vector2(144, 50 + items_size.y + 5), Vector2(711, 54 + 2 * items_size.y), Vector2(400, 65 + 3 * items_size.y)]
         while self.inMenu:
             tela.blit(tela_background_image, (0, 0))
+            write("v.1.0")
+            write("Ghostware", position=Vector2(tela_center.x - 140, tela_center.y-200), bg_color=(0, 0, 0), font=get_font("Agency FB", 90))
             self.inMenu = update_menu(self.inGame)
             left_click, scroll_click, right_click = pygame.mouse.get_pressed()
             mouse_pos = mouse_position()
