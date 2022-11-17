@@ -1,13 +1,8 @@
 import pygame
+from game.app import Game
 
 pygame.init()
 pygame.font.init()
 
-from game.src.scene import Scene
-from game.src.game import Game
-
-game = Game(True)
-phase_1 = Scene()
-game.scenes.append(phase_1)
-game.change_scene(game.scenes[0])
+game = Game()
 game.run()
