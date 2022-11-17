@@ -488,6 +488,10 @@ class Game(object):
             left_click, scroll_click, right_click = pygame.mouse.get_pressed()
             mouse_pos = mouse_position()
 
+            
+            for i in range(0, len(items)):
+                tela.blit(items[i], positions[i]) 
+
             if left_click:
                 #Criando cada um dos botões...
                 if button_jogar_position.x <= mouse_pos.x <= button_jogar_position.x + button_size.x and button_jogar_position.y <= mouse_pos.y <= button_jogar_position.y + button_size.y:
@@ -518,11 +522,7 @@ class Game(object):
                     if pos.x > tela_size.x:
                         pos.x = 0 - items[index].get_rect().w
                     else:
-                        pos.x += 0.5
-
-
-            for i in range(0, len(items)):
-                tela.blit(items[i], positions[i])      
+                        pos.x += 0.5     
             
             
             #pegando a posição do mouse
@@ -633,7 +633,6 @@ class Game(object):
                         self.waiting_time = 0
                     else:
                         self.waiting_time += abs(pygame.time.get_ticks() - delta_time)
-                    write(f"{self.waiting_time}")
 
                 for bullet in self.bullets:
                     bullet_collide, bullet_origin, bullet_direction, bullet_size = bullet
