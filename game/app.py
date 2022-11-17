@@ -404,7 +404,8 @@ class Game(object):
                     mixer.music.play()
                     pygame.quit() 
                 
-                if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y  <= mouse_pos.y <= button_help_position.y + button_size:
+                if button_help_position.x <= mouse_pos.x <= button_help_position.x + button_size.x and button_help_position.y  <= mouse_pos.y <= button_help_position.y + button_size.y:
+                    mixer.music.play()
                     print('aqui vai as intruções')        
             
             
