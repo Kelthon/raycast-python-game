@@ -2,10 +2,11 @@ import sys
 import math
 import numpy
 import pygame
+from random import randint
 from pygame.locals import *
 from pygame.font import Font
 from typing import Sequence, List, Tuple, Callable
-from pygame import Vector2, Rect, Color, mixer
+from pygame import Vector2, Rect, Color, mixer, Surface
 
 pygame.init()
 mixer.init()
@@ -19,9 +20,9 @@ def exit() -> None:
 
 def update_tela() -> None:
     """Update tela surface"""
-    
     pygame.display.flip()
     tela.fill([0]*3)
+    tela.blit(skybox, (0, 0))
 
 def line_slope(origin: Vector2, direction: Vector2) -> float:
     """Calculates the line slope of a line into two vectors
@@ -215,9 +216,46 @@ button_help_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 
 '''Aqui é a tela de fundo'''
 
 tela_background_image = pygame.image.load("game/public/textures/background.jpg") #olhar o caminho disso aqui
+
+#items
+items_size = Vector2(100, 100)
+skybox = pygame.image.load("./game/public/textures/skybox.png")
+aux_digital = pygame.image.load("./game/public/textures/auxilio_digital.png")
+aux_oculos = pygame.image.load("./game/public/textures/auxilio_oculos.png")
+bolsa_petista = pygame.image.load("./game/public/textures/bolsa_petista.png")
+cachaca51_1 = pygame.image.load("./game/public/textures/cachaca51_1.png")
+cachaca51_2 = pygame.image.load("./game/public/textures/cachaca51_2.png")
+coin = pygame.image.load("./game/public/textures/coin.png")
+marlboro = pygame.image.load("./game/public/textures/marlboro.png")
+meat = pygame.image.load("./game/public/textures/meat.png")
+money_1 = pygame.image.load("./game/public/textures/money_1.png")
+money_1 = pygame.image.load("./game/public/textures/money_2.png")
+money_bag = pygame.image.load("./game/public/textures/money_bag.png")
+purse = pygame.image.load("./game/public/textures/purse.png")
+small_purse = pygame.image.load("./game/public/textures/small_purse.png")
+suitcase = pygame.image.load("./game/public/textures/suitcase.png")
+xicara = pygame.image.load("./game/public/textures/xicara_cafe.png")
+skybox = pygame.transform.scale(skybox, tela_size)
+aux_digital = pygame.transform.scale(aux_digital, items_size)
+aux_oculos = pygame.transform.scale(aux_oculos, items_size)
+bolsa_petista = pygame.transform.scale(bolsa_petista, items_size)
+cachaca51_1 = pygame.transform.scale(cachaca51_1, items_size)
+cachaca51_2 = pygame.transform.scale(cachaca51_2, items_size)
+coin = pygame.transform.scale(coin, items_size)
+marlboro = pygame.transform.scale(marlboro, items_size)
+meat = pygame.transform.scale(meat, items_size)
+money_1 = pygame.transform.scale(money_1, items_size)
+money_1 = pygame.transform.scale(money_1, items_size)
+money_bag = pygame.transform.scale(money_bag, items_size)
+purse = pygame.transform.scale(purse, items_size)
+small_purse = pygame.transform.scale(small_purse, items_size)
+suitcase = pygame.transform.scale(suitcase, items_size)
+xicara = pygame.transform.scale(xicara, items_size)
+
 #Colocando som
 mixer.music.load("game/public/sound effects/ShotGun-Cocking_background.wav")#Olhar o caminho disso aqui
 mixer.music.set_volume(0.7)
+
 
 class Game(object):
     def __init__(self) -> None:
@@ -236,6 +274,15 @@ class Game(object):
         self.player: Rect =  pygame.draw.circle(tela, [255]*3, self.player_position, self.player_size)
         self.enemy = pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position.x, self.enemy_position.y, 20, 20),2)
         self.direction_move = 1
+        self.items: List[Tuple(Surface, int)] = []
+        self.items_taken:List[Tuple(Surface, int)]  = []
+        self.sort_items()
+        self.score = 0
+
+    def sort_items(self):
+        all = [aux_digital, aux_oculos, bolsa_petista, cachaca51_1, cachaca51_2, coin, marlboro, meat, money_1, money_1, money_bag, purse, small_purse, suitcase, xicara]
+        for i in range(0, 4):
+            self.items.append((all[randint(0, len(all) - 1)], i))
 
     def enemy_die(self):
         self.enemy_position = Vector2(-100, -100)
@@ -358,6 +405,10 @@ class Game(object):
         self.player: Rect =  pygame.draw.circle(tela, [255]*3, self.player_position, self.player_size)
         self.enemy = pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position.x, self.enemy_position.y, 20, 20),2)
         self.direction_move = 1
+        self.items: List[Tuple(Surface, int)] = []
+        self.items_taken:List[Tuple(Surface, int)]  = []
+        self.sort_items()
+        self.score = 0
 
     def run(self):
         while self.inMenu:
@@ -431,7 +482,6 @@ class Game(object):
                 self.enemy = pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position.x, self.enemy_position.y, 20, 20),2)
                 self.ray = raycast_with_collision(self.player_position, mouse_position(), tela_size, self.walls)
                 self.raycast_line = pygame.draw.aaline(tela, [0, 255, 0], self.player_position, self.ray)
-
                 self.walls = [
                     pygame.draw.rect(tela, [160]*3, (0, 0, 5, 120)),
                     pygame.draw.rect(tela, [160]*3, (5, 0, 115, 5)),
@@ -464,7 +514,36 @@ class Game(object):
                     pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y + 100, 100, 5)),
                     pygame.draw.rect(tela, [160]*3, (tela_center.x + 55, tela_center.y + 100, 100, 5)),
                 ]
-                
+
+
+                for i in self.items:
+                    if not i in self.items_taken:
+                        item, pos = i
+                        rect = item.get_rect()
+
+                        if pos == 0:
+                            tela.blit(item, Vector2(0, 0))
+                            rect.update(0, 0, items_size.x, items_size.y)
+
+                        elif pos == 1:
+                            tela.blit(item, Vector2(tela_size.x - items_size.x, 0))
+                            rect.update(tela_size.x - items_size.x, 0, items_size.x, items_size.y)
+                    
+                        elif pos == 2:
+                            tela.blit(item, Vector2(0, tela_size.y - items_size.y))
+                            rect.update(0, tela_size.y - items_size.y, items_size.x, items_size.y)
+
+                        else:
+                            tela.blit(item, Vector2(tela_size.x - items_size.x, tela_size.y - items_size.y))
+                            rect.update(tela_size.x - items_size.x, tela_size.y - items_size.y, items_size.x, items_size.y)
+                    
+                        
+                        if rect.colliderect(self.player):
+                            if item not in self.items_taken:
+                                self.items_taken.append(i)
+
+                self.score = len(self.items_taken) * 10
+
                 if left_click:
                     if self.waiting_time == self.fire_rate:
                         start_position = Vector2(self.player_position.x - 2.5, self.player_position.y - 2.5)
@@ -503,6 +582,10 @@ class Game(object):
 
                 if self.enemy.colliderect(self.player):
                     self.inPause = True
+
+                default_bold = get_font(bold = True)
+                text_center = center(Vector2(30,0))
+                write(f"score: {self.score}", Color(255, 255, 255), Vector2(tela_center.x - text_center.x, 0), Color(0, 0, 0), default_bold)
 
             events = pygame.event.get()
             close_tela()
