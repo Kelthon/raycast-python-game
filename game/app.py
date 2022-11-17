@@ -672,8 +672,8 @@ class Game(object):
             events = pygame.event.get()
             close_tela()
             for event in events:
-                write("Game Over", Color(255, 0, 0), tela_center, font=impact_font)
-                write("press any key to exit", position=Vector2(tela_center.x, tela_center.y + 30))
+                write("Game Over", Color(255, 0, 0), Vector2(tela_center.x - 120, tela_center.y - 60), font=get_font("Impact", 60))
+                write("press any key to exit", position=Vector2(tela_center.x - 90, tela_center.y + 30), font=get_font(size=30))
                 self.update()
                 if event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
                     self.inGame = False
