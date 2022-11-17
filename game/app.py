@@ -279,6 +279,54 @@ class Game(object):
         self.sort_items()
         self.score = 0
 
+    def phase_1(self):
+        self.walls = [
+                    pygame.draw.rect(tela, [160]*3, (0, 0, 5, 120)),
+                    pygame.draw.rect(tela, [160]*3, (5, 0, 115, 5)),
+                    pygame.draw.rect(tela, [160]*3, (0, 120, 70, 5)),
+                    pygame.draw.rect(tela, [160]*3, (120, 0, 5, 70)),
+                    pygame.draw.rect(tela, [160]*3, (120, 0, 5, 70)),
+                    pygame.draw.rect(tela, [160]*3, (120, 0, 5, 70)),
+                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 5, 0, 5, 120)),
+                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, 0, 115, 5)),
+                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 125, 0, 5, 70)),
+                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 70, 120, 70, 5)),
+                    pygame.draw.rect(tela, [160]*3, (0, tela_size.y - 120, 5, 120)),
+                    pygame.draw.rect(tela, [160]*3, (5, tela_size.y - 5, 115, 5)),
+                    pygame.draw.rect(tela, [160]*3, (120, tela_size.y - 70, 5, 70)),
+                    pygame.draw.rect(tela, [160]*3, (5, tela_size.y - 120, 70, 5)),
+                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 5, tela_size.y - 120, 5, 120)),
+                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, tela_size.y - 5, 115, 5)),
+                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, tela_size.y - 70, 5, 70)),
+                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 70, tela_size.y - 120, 70, 5)),
+                    pygame.draw.rect(tela, [160]*3, (tela_center.x - 150, tela_center.y - 100, 70, 5)),
+                    pygame.draw.rect(tela, [160]*3, (tela_center.x - 35, tela_center.y - 100, 70, 5)),
+                    pygame.draw.rect(tela, [160]*3, (tela_center.x + 80, tela_center.y - 100, 70, 5)),
+                    pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y - 100, 5, 200)),
+                    pygame.draw.rect(tela, [160]*3, (tela_center.x + 150, tela_center.y - 100, 5, 200)),
+                    pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y + 100, 100, 5)),
+                    pygame.draw.rect(tela, [160]*3, (tela_center.x + 55, tela_center.y + 100, 100, 5)),
+                ]
+
+    def phase_2(self):
+        ref = center(center(tela_center))
+        self.walls = [
+            pygame.draw.rect(tela, [160]*3, (ref, Vector2(60, 60))),
+            pygame.draw.rect(tela, [160]*3, (Vector2(ref.x*6 + 60, ref.y), Vector2(60, 60))),
+            pygame.draw.rect(tela, [160]*3, (Vector2(ref.x, ref.y*6), Vector2(60, 60))),
+            pygame.draw.rect(tela, [160]*3, (Vector2(ref.x*6 + 60, ref.y*6), Vector2(60, 60))),
+            pygame.draw.rect(tela, [160]*3, (tela_size.x - 5, tela_size.y - 120, 5, 120)),
+            pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, tela_size.y - 5, 115, 5)),
+            pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, tela_size.y - 70, 5, 70)),
+            pygame.draw.rect(tela, [160]*3, (tela_size.x - 70, tela_size.y - 120, 70, 5)),
+            pygame.draw.rect(tela, [160]*3, (tela_center.x - 150, tela_center.y - 100, 70, 5)),
+            pygame.draw.rect(tela, [160]*3, (tela_center.x + 80, tela_center.y - 100, 70, 5)),
+            pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y - 100, 5, 200)),
+            pygame.draw.rect(tela, [160]*3, (tela_center.x + 150, tela_center.y - 100, 5, 200)),
+            pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y + 100, 100, 5)),
+            pygame.draw.rect(tela, [160]*3, (tela_center.x + 55, tela_center.y + 100, 100, 5)),
+        ]
+
     def sort_items(self):
         all = [aux_digital, aux_oculos, bolsa_petista, cachaca51_1, cachaca51_2, coin, marlboro, meat, money_1, money_1, money_bag, purse, small_purse, suitcase, xicara]
         for i in range(0, 4):
@@ -389,6 +437,12 @@ class Game(object):
 
         for i in self.walls:
             del i
+
+        for i in self.items:
+            del i
+
+        for i in self.items_taken:
+            del i
         
         self.fire_rate = 50
         self.waiting_time = self.fire_rate
@@ -472,6 +526,7 @@ class Game(object):
             pygame.display.update()
 
     def play(self):
+        next_phase = False
         while self.inGame:
             """main loop responsible for drawing things on the tela"""
             while not self.inPause:
@@ -483,38 +538,14 @@ class Game(object):
                 self.enemy = pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position.x, self.enemy_position.y, 20, 20),2)
                 self.ray = raycast_with_collision(self.player_position, mouse_position(), tela_size, self.walls)
                 self.raycast_line = pygame.draw.aaline(tela, [0, 255, 0], self.player_position, self.ray)
-                self.walls = [
-                    pygame.draw.rect(tela, [160]*3, (0, 0, 5, 120)),
-                    pygame.draw.rect(tela, [160]*3, (5, 0, 115, 5)),
-                    pygame.draw.rect(tela, [160]*3, (0, 120, 70, 5)),
-                    pygame.draw.rect(tela, [160]*3, (120, 0, 5, 70)),
-                    pygame.draw.rect(tela, [160]*3, (120, 0, 5, 70)),
-                    pygame.draw.rect(tela, [160]*3, (120, 0, 5, 70)),
+                
+                if next_phase:
+                    self.phase_2()
+                else:
+                    self.phase_1()
 
-                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 5, 0, 5, 120)),
-                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, 0, 115, 5)),
-                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 125, 0, 5, 70)),
-                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 70, 120, 70, 5)),
-
-                    pygame.draw.rect(tela, [160]*3, (0, tela_size.y - 120, 5, 120)),
-                    pygame.draw.rect(tela, [160]*3, (5, tela_size.y - 5, 115, 5)),
-                    pygame.draw.rect(tela, [160]*3, (120, tela_size.y - 70, 5, 70)),
-                    pygame.draw.rect(tela, [160]*3, (5, tela_size.y - 120, 70, 5)),
-
-                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 5, tela_size.y - 120, 5, 120)),
-                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, tela_size.y - 5, 115, 5)),
-                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 120, tela_size.y - 70, 5, 70)),
-                    pygame.draw.rect(tela, [160]*3, (tela_size.x - 70, tela_size.y - 120, 70, 5)),
-
-                    pygame.draw.rect(tela, [160]*3, (tela_center.x - 150, tela_center.y - 100, 70, 5)),
-                    pygame.draw.rect(tela, [160]*3, (tela_center.x - 35, tela_center.y - 100, 70, 5)),
-                    pygame.draw.rect(tela, [160]*3, (tela_center.x + 80, tela_center.y - 100, 70, 5)),
-
-                    pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y - 100, 5, 200)),
-                    pygame.draw.rect(tela, [160]*3, (tela_center.x + 150, tela_center.y - 100, 5, 200)),
-                    pygame.draw.rect(tela, [160]*3, (tela_center.x - 155, tela_center.y + 100, 100, 5)),
-                    pygame.draw.rect(tela, [160]*3, (tela_center.x + 55, tela_center.y + 100, 100, 5)),
-                ]
+                for i in self.walls:
+                    pygame.draw.rect(tela, [160]*3, i)
 
 
                 for i in self.items:
@@ -544,6 +575,13 @@ class Game(object):
                                 self.items_taken.append(i)
 
                 self.score = len(self.items_taken) * 10
+
+                key = pygame.key.get_pressed()
+                if self.score >= 40 or key[K_ESCAPE]:
+                    self.restart()
+                    self.inMenu = False
+                    self.inGame = True
+                    next_phase = True
 
                 if left_click:
                     if self.waiting_time == self.fire_rate:
