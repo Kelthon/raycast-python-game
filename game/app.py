@@ -79,7 +79,6 @@ def raycast(origin: Vector2, direction: Vector2, max_length: Vector2) -> Vector2
 
     return ray
 
-
 def raycast_with_collision(origin: Vector2, direction: Vector2, max_length: Vector2, collision_list: List[Rect]) -> Vector2:
     """Simulates a collision in raycast vector
     
@@ -117,29 +116,6 @@ def mouse_position() -> Vector2:
     """
 
     return Vector2(pygame.mouse.get_pos())
-
-
-def get_motion_sense(origin: Vector2, direction: Vector2) -> Vector2:
-    """Returns a Vector2 with a montion sense
-    
-    :param origin: points that represents the origin motion
-    :type origin: pygame.math.Vector2
-    :param direction: points that represents the end motion
-    :type direction: pygame.math.Vector2
-
-    :returns: returns a Vector2 with a montion sense
-    :rtype: pygame.math.Vector2
-    """
-    
-    sense = Vector2(1, 1)
-
-    if origin.x > direction.x:
-        sense.x = -1
-    
-    if origin.y > direction.y:
-        sense.y = -1
-
-    return sense
 
 def projectile_collided(projectile_origin: Vector2, projectile_size: Vector2, rects: List[Rect]) -> bool:
     """Returns boolean that represents if bulltes to collide
@@ -224,7 +200,6 @@ tela_size = Vector2((800, 600))
 tela_center = center(tela_size)
 tela = pygame.display.set_mode(tela_size, RESIZABLE)
 
-
 '''*** Informações para inserir no meu incial do programa ***'''
 color_white = (255, 255, 255)
 color_light = (128, 128, 128) #Cor do botão mudará para cinza quando passar o mouse por cima
@@ -238,7 +213,6 @@ button_jogar_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 +
 button_quit_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 150)
 button_help_position = Vector2(tela_size.x/2 - button_size.x/2, tela_size.y/2 + 200)
 '''Aqui é a tela de fundo'''
-
 
 tela_background_image = pygame.image.load("game/public/textures/background.jpg") #olhar o caminho disso aqui
 #Colocando som
@@ -263,15 +237,17 @@ class Game(object):
         self.enemy = pygame.draw.rect(tela, (240,42,42), Rect(self.enemy_position.x, self.enemy_position.y, 20, 20),2)
         self.direction_move = 1
 
+    def enemy_die(self):
+        self.enemy_position = Vector2(-100, -100)
+
     def update(self) -> None:
         """Call functions to update the game loop"""
 
         update_tela()
         self.player_move()
-        self.enemy_move();
+        self.enemy_move()
         
         return close_tela()
-
     
     def enemy_move(self) -> None:
         """movement of enemy horizontally"""
@@ -309,10 +285,6 @@ class Game(object):
             self.direction_move = -1; 
 
         self.enemy_position.x+=0.1*self.direction_move*state
-
-    def straight_raycast(self) -> Vector2:
-        """raycast enemy"""
-        return (self.enemy_position.x, self.enemy_position.y+200)
 
     def get_collision_direction(self, rects: List[Rect]) -> List[str]:
         """Returns a string where has the collision with player
@@ -421,7 +393,7 @@ class Game(object):
                 pygame.draw.rect(tela,color_dark,(button_jogar_position, button_size))    
 
             #Botão quit
-            
+
             if button_quit_position.x <= mouse_pos.x <= button_quit_position.x + button_size.x and button_quit_position.y <= mouse_pos.y <= button_quit_position.y + button_size.y:
                 #Aqui será o botão cinza
                 pygame.draw.rect(tela,color_light,(button_quit_position, button_size))
@@ -437,6 +409,7 @@ class Game(object):
             else: 
                 #Aqui será o botão preto
                 pygame.draw.rect(tela,color_dark,(button_help_position, button_size))
+            
 
             #Aqui será os texto que representarão Jogar e Quit
             
@@ -522,7 +495,11 @@ class Game(object):
                         
                         bullet_collide = projectile_collided(bullet_origin, bullet_size, self.walls) | bullet_collide
                         self.bullets[self.bullets.index(bullet)] = (bullet_collide, bullet_origin, bullet_direction, bullet_size)
-                        pygame.draw.rect(tela, [255, 127, 0], (bullet_origin, bullet_size))
+                        bullet_rect = pygame.draw.rect(tela, [255, 127, 0], (bullet_origin, bullet_size))
+
+                if bullet_rect.colliderect(self.enemy):
+                    del self.bullets[self.bullets.index(bullet)]
+                    self.enemy_die()
 
                 if self.enemy.colliderect(self.player):
                     self.inPause = True
