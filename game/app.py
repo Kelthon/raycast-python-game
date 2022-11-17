@@ -278,6 +278,11 @@ class Game(object):
         self.items_taken:List[Tuple(Surface, int)]  = []
         self.sort_items()
         self.score = 0
+        self.enemy_is_die = False
+    
+    def respawn(self):
+        new_pos = Vector2(randint(50, tela_size.x - 50), randint(50, tela_size.y - 50))
+        self.enemy_position = new_pos
 
     def phase_1(self):
         self.walls = [
@@ -333,6 +338,7 @@ class Game(object):
             self.items.append((all[randint(0, len(all) - 1)], i))
 
     def enemy_die(self):
+        self.enemy_is_die = True
         self.enemy_position = Vector2(-100, -100)
 
     def update(self) -> None:
@@ -463,6 +469,7 @@ class Game(object):
         self.items_taken:List[Tuple(Surface, int)]  = []
         self.sort_items()
         self.score = 0
+        
 
     def run(self):
         while self.inMenu:
@@ -618,6 +625,10 @@ class Game(object):
                 if bullet_rect.colliderect(self.enemy):
                     del self.bullets[self.bullets.index(bullet)]
                     self.enemy_die()
+
+                if self.enemy_is_die:
+                    self.enemy_is_die = False
+                    self.respawn()
 
                 if self.enemy.colliderect(self.player):
                     self.inPause = True
