@@ -1,8 +1,5 @@
-import pygame
 from game.app import Game
-
-pygame.init()
-pygame.font.init()
+from game.src.config import *
 
 game = Game()
 game.run()

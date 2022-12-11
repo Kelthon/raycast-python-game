@@ -3,13 +3,16 @@ import pygame.locals as locals_namespace
 
 """Importing pygame modules with alias"""
 key = pygame.key
-font = pygame.font
 draw = pygame.draw
+font = pygame.font
+time = pygame.time
 mouse = pygame.mouse
 mixer = pygame.mixer
 event = pygame.event
+image = pygame.image
 local = locals_namespace
 display = pygame.display
+transform = pygame.transform
 
 """Importing pygame Classes with alias"""
 Rect = pygame.Rect
