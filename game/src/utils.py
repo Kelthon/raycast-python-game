@@ -1,4 +1,5 @@
 from random import randint
+from typing import List, Tuple
 from game.src.facade import *
 
 
@@ -23,16 +24,16 @@ def center(vector: Vector2) -> Vector2:
     return Vector2(vector.x / 2, vector.y / 2)
 
 
-def get_random_items(items):
+def get_random_items(items) -> List[Tuple[Surface, int]]:
     rand = []
 
     for i in range(0, 4):
-        rand.append(items[randint(0, len(items) - 1)])
+        rand.append((items[randint(0, len(items) - 1)], i))
 
     return rand
     
 
-def suffle_items(items):
+def suffle_items(items) -> List[Tuple[Surface, int]]:
     suffle = []
 
     for i in range(0, 4):

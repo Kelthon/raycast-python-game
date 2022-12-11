@@ -74,12 +74,11 @@ class Game(object):
         self.walls: List[Rect] = []
         self.bullets: List[Tuple[bool, Vector2, Vector2, Vector2]] = []
         self.bullet_speed = 1
-        self.player: Rect =  player.update()
-
+        self.player = player
 
 
     def run(self):
-        all_items = get_random_items(items)
+        self.all_items = get_random_items(items)
         positions = [Vector2(50, 50), Vector2(144, 50 + items_size.y + 5), Vector2(711, 54 + 2 * items_size.y), Vector2(400, 65 + 3 * items_size.y)]
         while self.inMenu:
             tela.surface.blit(tela_background_image, (0, 0))
@@ -90,8 +89,8 @@ class Game(object):
             mouse_pos = mouse_position()
 
             
-            for i in range(0, len(all_items)):
-                tela.surface.blit(all_items[i], positions[i]) 
+            for i in range(0, len(self.all_items)):
+                tela.surface.blit(self.all_items[i][0], positions[i]) 
 
             if left_click:
                 #Criando cada um dos botões...
@@ -115,13 +114,13 @@ class Game(object):
             for pos in positions:
                 index = positions.index(pos)
                 if index % 2 == 0:
-                    if pos.x < 0 - all_items[index].get_rect().w:
+                    if pos.x < 0 - self.all_items[index][0].get_rect().w:
                         pos.x = tela.size.x
                     else:
                         pos.x -= 0.5
                 else:
                     if pos.x > tela.size.x:
-                        pos.x = 0 - all_items[index].get_rect().w
+                        pos.x = 0 - self.all_items[index].get_rect().w
                     else:
                         pos.x += 0.5     
             
@@ -179,16 +178,15 @@ class Game(object):
                 delta_time = time.get_ticks()
                 left_click, scroll_click, right_click = mouse.get_pressed()
 
-                self.player = draw.circle(tela.surface, [255]*3, self.player_position, self.player_size)
-                self.enemy = [
-                    draw.rect(tela.surface, (240,42,42), Rect(self.enemy_position[0].x, self.enemy_position[0].y, 20, 20),2), 
-                    draw.rect(tela.surface, (240,42,42), Rect(self.enemy_position[1].x, self.enemy_position[1].y, 20, 20),2)
+                self.player.update()
+                
+                for enemy in self.phase.enemy_list:                
+                    enemy.update() 
     
-                ]
 
                 raycast = Raycaster(player.position, mouse_position(), tela.size)
-                self.ray = raycast.raycast_with_collision(tela.size, self.walls)
-                self.raycast_line = draw.aaline(tela.surface, [0, 255, 0], self.player_position, self.ray)
+                self.ray = raycast.raycast_with_collision(self.walls)
+                self.raycast_line = draw.aaline(tela.surface, [0, 255, 0], player.position, self.ray)
                 
 
                 for i in self.walls:
@@ -196,7 +194,7 @@ class Game(object):
 
 
                 for i in self.all_items:
-                    if not i in self.items_taken:
+                    if not i in self.phase.items_taken:
                         item, pos = i
                         rect = item.get_rect()
 
@@ -216,15 +214,15 @@ class Game(object):
                             tela.surface.blit(item, Vector2(tela.size.x - items_size.x, tela.size.y - items_size.y))
                             rect.update(tela.size.x - items_size.x, tela.size.y - items_size.y, items_size.x, items_size.y)
                     
-                        
-                        if rect.colliderect(self.player):
-                            if item not in self.items_taken:
-                                self.items_taken.append(i)
+                        if self.player.shape is not None:
+                            if rect.colliderect(self.player.shape):
+                                if item not in self.phase.items_taken:
+                                    self.phase.items_taken.append(item)
 
-                self.score = len(self.items_taken) * 10
+                self.score = len(self.phase.items_taken) * 10
 
-                key = key.get_pressed()
-                if self.score >= 40 or key[local.K_ESCAPE]:
+                kp = key.get_pressed()
+                if self.score >= 40 or kp[local.K_ESCAPE]:
                     self.restart()
                     self.inMenu = False
                     self.inGame = True
@@ -232,7 +230,7 @@ class Game(object):
 
                 if left_click:
                     if self.waiting_time >= self.fire_rate:
-                        start_position = Vector2(self.player_position.x - 2.5, self.player_position.y - 2.5)
+                        start_position = Vector2(self.player.position.x - 2.5, self.player.position.y - 2.5)
                         self.bullets.append((False, start_position, self.ray, Vector2(5, 5)))
                         self.waiting_time = 0
                     else:
@@ -262,14 +260,15 @@ class Game(object):
                         self.bullets[self.bullets.index(bullet)] = (bullet_collide, bullet_origin, bullet_direction, bullet_size)
                         bullet_rect = draw.rect(tela.surface, [255, 127, 0], (bullet_origin, bullet_size))
                     self.i= -1
-                for enemy in self.enemy:
+                for enemy in self.phase.enemy_list:
                     self.i = self.i+1
-                    if bullet_rect.colliderect(enemy):
-                        del self.bullets[self.bullets.index(bullet)]
-                        self.enemy_die(self.i)
+                    if enemy.shape is not None:
+                        if bullet_rect.colliderect(enemy.shape):
+                            del self.bullets[self.bullets.index(bullet)]
+                            enemy.respawn()
 
-                    if enemy.colliderect(self.player):
-                        self.inPause = True
+                        if enemy.shape.colliderect(self.player):
+                            self.inPause = True
 
                 default_bold = get_font(bold = True)
                 text_center = center(Vector2(30,0))

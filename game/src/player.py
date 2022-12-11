@@ -115,7 +115,7 @@ class Player(Walker):
         if surface is None:
             return
         else:
-            self.shape = draw.rect(surface, [255]*3, (self.position, self.size))
+            self.shape = draw.circle(surface, [255]*3, self.position, self.size)
 
     def move(self) -> None:
         if self.shape is not None:
