@@ -28,9 +28,11 @@ def projectile_collided(projectile_origin: Vector2, projectile_size: Vector2, re
 
     if projectile_origin.x >= tela.size.x or projectile_origin.x <= 0:
         collision = True
-    
+        return collision
+        
     if projectile_origin.y + projectile_size.y >= tela.size.y or projectile_origin.y - projectile_size.y <= 0:
         collision = True
+        return collision
 
     for rect in rects:
         if rect.colliderect(Rect(projectile_origin.x, projectile_origin.y, projectile_size.x, projectile_size.y)):
